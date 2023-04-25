@@ -1,6 +1,7 @@
 package com.shorty.shorty;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import responses.ResponseLogin;
 import responses.ResponseRegister;
@@ -11,7 +12,7 @@ import responses.ResponseStatistics;
 public class AdministrationController {
 
     //TODO registracija
-    @GetMapping("/administration/register")
+    @PostMapping(value = "/administration/register", consumes = "application/json", produces = "application/json")
     public ResponseRegister register () {
         //test
         ResponseRegister ret1 = new ResponseRegister();
