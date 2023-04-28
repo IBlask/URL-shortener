@@ -8,6 +8,10 @@ public class RequestRegister {
     //TODO Check RequestRegister
     private String accountID;
 
+    public RequestRegister(String accountID) {
+        this.accountID = accountID;
+    }
+
     public String getAccountID() {
         return accountID;
     }
