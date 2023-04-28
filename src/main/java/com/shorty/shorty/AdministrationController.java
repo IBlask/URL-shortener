@@ -17,28 +17,25 @@ public class AdministrationController {
     @Autowired
     UserRepository userRepository;
 
-    //TODO CHECK registracija
     @PostMapping(value = "/administration/register", consumes = "application/json", produces = "application/json")
-    //@GetMapping("/administration/register")
     public ResponseRegister register (@RequestBody RequestRegister requestRegister) {
         ResponseRegister responseRegister = new ResponseRegister();
 
-        //je li poslan prazan POST
-        if (requestRegister.getAccountID() == null) {
+        //is POST request empty
+        if (requestRegister.isEmpty()) {
             return responseRegister;
         }
-        //je li poslan accountID
-        else if (requestRegister.getAccountID() == "") {
+        //was accountID entered/sent
+        else if (requestRegister.accountIdIsNotSent()) {
             responseRegister.setDescription("Please enter your username!");
         }
 
-        //provjeriti postoji li accountID
+        //does accountID exist in database
         else if (requestRegister.accountIdExists(userRepository)) {
-            //ako postoji, error
             responseRegister.setDescription("Account ID already exists!");
 
         }
-        //ako ne postoji, generiraj lozinku i spremi podatke u bazu
+        //if accountID doesn't exist, generate password and insert data to database
         else {
             responseRegister.generatePassword();
             responseRegister.setDescription(null);
