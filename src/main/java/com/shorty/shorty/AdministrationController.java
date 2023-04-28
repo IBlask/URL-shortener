@@ -39,9 +39,8 @@ public class AdministrationController {
         else {
             responseRegister.generatePassword();
             responseRegister.setDescription(null);
-            User newUser = new User();
-            newUser.setUsername(requestRegister.getAccountID());
-            newUser.setPassword(responseRegister.getPassword());
+            responseRegister.setSuccess(true);
+            User newUser = new User(requestRegister.getAccountID(), responseRegister.getPassword());
             userRepository.save(newUser);
         }
 
