@@ -1,11 +1,9 @@
 package com.shorty.shorty.dto.request;
 
 import com.shorty.shorty.repository.UserRepository;
-import org.springframework.stereotype.Service;
 
-@Service
 public class RequestRegister {
-    //TODO Check RequestRegister
+
     private String accountID;
 
     public RequestRegister() {

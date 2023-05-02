@@ -1,6 +1,7 @@
 package com.shorty.shorty.dto.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.lang3.RandomStringUtils;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ResponseRegister {
@@ -30,14 +31,6 @@ public class ResponseRegister {
     }
 
     public void generatePassword() {
-        String alNum = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                     + "abcdefghijklmnopqrstuvwxyz"
-                     + "0123456789";
-
-        StringBuilder pass = new StringBuilder();
-        for (int i = 0; i < 10; i++) {
-            pass.append(alNum.charAt((int)(Math.random() * alNum.length())));
-        }
-        this.password = pass.toString();
+        this.password = RandomStringUtils.random(8, true, true);
     }
 }
