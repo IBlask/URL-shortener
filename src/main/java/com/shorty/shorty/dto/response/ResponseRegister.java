@@ -1,4 +1,4 @@
-package responses;
+package com.shorty.shorty.dto.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 

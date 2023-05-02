@@ -1,6 +1,6 @@
-package requests;
+package com.shorty.shorty.dto.request;
 
-import com.shorty.shorty.UserRepository;
+import com.shorty.shorty.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service

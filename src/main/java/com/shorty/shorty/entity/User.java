@@ -1,4 +1,4 @@
-package com.shorty.shorty;
+package com.shorty.shorty.entity;
 
 import jakarta.persistence.*;
 

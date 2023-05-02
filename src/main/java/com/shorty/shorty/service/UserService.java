@@ -1,24 +1,19 @@
-package com.shorty.shorty;
+package com.shorty.shorty.service;
 
+import com.shorty.shorty.dto.request.RequestRegister;
+import com.shorty.shorty.dto.response.ResponseRegister;
+import com.shorty.shorty.entity.User;
+import com.shorty.shorty.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import requests.RequestRegister;
-import responses.ResponseLogin;
-import responses.ResponseRegister;
-import responses.ResponseShort;
-import responses.ResponseStatistics;
+import org.springframework.stereotype.Service;
 
-@RestController
-public class AdministrationController {
+@Service
+public class UserService {
 
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping(value = "/administration/register", consumes = "application/json", produces = "application/json")
-    public ResponseRegister register (@RequestBody RequestRegister requestRegister) {
+    public ResponseRegister register(RequestRegister requestRegister) {
         ResponseRegister responseRegister = new ResponseRegister();
 
         //is POST request empty
@@ -46,32 +41,4 @@ public class AdministrationController {
 
         return responseRegister;
     }
-
-
-
-    //TODO prijava
-    @GetMapping("/administration/login")
-    public ResponseLogin login () {
-
-        return null;
-    }
-
-
-
-    //TODO short
-    @GetMapping("/administration/short")
-    public ResponseShort shortIt () {
-
-        return null;
-    }
-
-
-
-    //TODO statistics
-    @GetMapping("/administration/statistics")
-    public ResponseStatistics statistics () {
-
-        return null;
-    }
-
 }

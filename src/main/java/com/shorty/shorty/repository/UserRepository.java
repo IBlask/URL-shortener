@@ -1,5 +1,6 @@
-package com.shorty.shorty;
+package com.shorty.shorty.repository;
 
+import com.shorty.shorty.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
