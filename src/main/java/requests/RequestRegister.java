@@ -24,8 +24,8 @@ public class RequestRegister {
         return accountID == null;
     }
 
-    public boolean accountIdIsNotSent() {
-        return accountID == "";
+    public boolean accountIdIsBlank() {
+        return accountID.isBlank();
     }
 
     public boolean accountIdExists(UserRepository userRepository) {

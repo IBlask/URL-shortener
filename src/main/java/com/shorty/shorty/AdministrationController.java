@@ -26,7 +26,7 @@ public class AdministrationController {
             return responseRegister;
         }
         //was accountID entered/sent
-        else if (requestRegister.accountIdIsNotSent()) {
+        else if (requestRegister.accountIdIsBlank()) {
             responseRegister.setDescription("Please enter your username!");
         }
 
