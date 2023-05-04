@@ -14,6 +14,10 @@ public class RequestRegister {
         this.accountID = accountID;
     }
 
+    public void setAccountID(String accountID) {
+        this.accountID = accountID;
+    }
+
     public String getAccountID() {
         return accountID;
     }
