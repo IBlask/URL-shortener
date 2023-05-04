@@ -4,16 +4,12 @@ import com.shorty.shorty.dto.request.RequestRegister;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-    @Autowired
-    UserRepository userRepository;
-
-    public ResponseRegister register(RequestRegister requestRegister) {
+    public ResponseRegister register(RequestRegister requestRegister, UserRepository userRepository) {
         ResponseRegister responseRegister = new ResponseRegister();
 
         //is POST request empty
