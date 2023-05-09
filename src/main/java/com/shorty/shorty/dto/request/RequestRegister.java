@@ -31,6 +31,6 @@ public class RequestRegister {
     }
 
     public boolean accountIdExists(UserRepository userRepository) {
-        return !userRepository.findByUsername(this.accountID).isEmpty();
+        return !(userRepository.findByUsername(this.accountID) == null);
     }
 }
