@@ -4,7 +4,6 @@ import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UserRepository;
 
 public class RequestLogin {
-    //TODO RequestLogin
     private String accountID;
     private String password;
 
@@ -34,15 +33,15 @@ public class RequestLogin {
     }
 
     public boolean isEmpty() {
-        return accountID == null && password == null;
+        return accountID == null || password == null;
     }
 
     public boolean accountIdIsBlank() {
-        return accountID.isBlank() || password == null;
+        return accountID.isBlank();
     }
 
     public boolean passwordIsBlank() {
-        return password.isBlank() || password == null;
+        return password.isBlank();
     }
 
     public boolean accountIdAndPasswordAreMatching(UserRepository userRepository) {
