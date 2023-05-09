@@ -1,6 +1,8 @@
 package com.shorty.shorty.service;
 
+import com.shorty.shorty.dto.request.RequestLogin;
 import com.shorty.shorty.dto.request.RequestRegister;
+import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.repository.UserRepository;
 import org.junit.jupiter.api.MethodOrderer;
@@ -92,4 +94,83 @@ class UserServiceTests {
         assertNull(response.getPassword());
     }
 
+
+
+    @Test
+    @Order(5)
+    void login_test_registeredUser() {
+        RequestLogin request = mock(RequestLogin.class);
+        request.setAccountID("ime");
+        request.setPassword("pass");
+        when(request.isEmpty()).thenReturn(false);
+        when(request.accountIdIsBlank()).thenReturn(false);
+        when(request.passwordIsBlank()).thenReturn(false);
+        when(request.accountIdAndPasswordAreMatching(userRepository)).thenReturn(true);
+
+        ResponseLogin response = userService.login(request, userRepository);
+
+        assertTrue(response.isSuccess());
+    }
+
+    @Test
+    @Order(6)
+    void login_test_unregisteredUser() {
+        RequestLogin request = mock(RequestLogin.class);
+        request.setAccountID("ime");
+        request.setPassword("pass");
+        when(request.isEmpty()).thenReturn(false);
+        when(request.accountIdIsBlank()).thenReturn(false);
+        when(request.passwordIsBlank()).thenReturn(false);
+        when(request.accountIdAndPasswordAreMatching(userRepository)).thenReturn(false);
+
+        ResponseLogin response = userService.login(request, userRepository);
+
+        assertFalse(response.isSuccess());
+    }
+
+    @Test
+    @Order(7)
+    void login_test_badRequest() {
+        RequestLogin request = mock(RequestLogin.class);
+        when(request.isEmpty()).thenReturn(true);
+        when(request.accountIdIsBlank()).thenReturn(true);
+        when(request.passwordIsBlank()).thenReturn(true);
+        when(request.accountIdAndPasswordAreMatching(userRepository)).thenReturn(false);
+
+        ResponseLogin response = userService.login(request, userRepository);
+
+        assertFalse(response.isSuccess());
+    }
+
+    @Test
+    @Order(8)
+    void login_test_blankAccountId() {
+        RequestLogin request = mock(RequestLogin.class);
+        request.setAccountID("");
+        request.setPassword("pass");
+        when(request.isEmpty()).thenReturn(false);
+        when(request.accountIdIsBlank()).thenReturn(true);
+        when(request.passwordIsBlank()).thenReturn(false);
+        when(request.accountIdAndPasswordAreMatching(userRepository)).thenReturn(false);
+
+        ResponseLogin response = userService.login(request, userRepository);
+
+        assertFalse(response.isSuccess());
+    }
+
+    @Test
+    @Order(9)
+    void login_test_blankPassword() {
+        RequestLogin request = mock(RequestLogin.class);
+        request.setAccountID("ime");
+        request.setPassword("");
+        when(request.isEmpty()).thenReturn(false);
+        when(request.accountIdIsBlank()).thenReturn(false);
+        when(request.passwordIsBlank()).thenReturn(true);
+        when(request.accountIdAndPasswordAreMatching(userRepository)).thenReturn(false);
+
+        ResponseLogin response = userService.login(request, userRepository);
+
+        assertFalse(response.isSuccess());
+    }
 }
