@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-public class AdministrationControllerTests_requests {
+public class AdministrationControllerUnitTests {
     @Autowired
     MockMvc mockMvc;
     @Autowired
