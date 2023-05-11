@@ -7,9 +7,10 @@ CREATE TABLE USERS(
 
 CREATE TABLE URL_TABLE(
   url_id int not null AUTO_INCREMENT,
-  full_url varchar(1000) not null,
-  short_url varchar(255) not null,
+  fullUrl varchar(1000) not null,
+  shortUrl varchar(255) not null,
   redirects int not null DEFAULT 0,
+  redirectType smallint not null DEFAULT 302,
   PRIMARY KEY (url_id)
 );
 
