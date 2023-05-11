@@ -27,7 +27,6 @@ public class AdministrationController {
 
 
 
-    //TODO CHECK prijava
     @PostMapping(value = "/administration/login", consumes = "application/json", produces = "application/json")
     public ResponseLogin login (@RequestBody RequestLogin requestLogin) {
         return userService.login(requestLogin, userRepository);
