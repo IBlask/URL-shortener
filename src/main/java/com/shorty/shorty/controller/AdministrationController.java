@@ -1,11 +1,14 @@
 package com.shorty.shorty.controller;
 
 import com.shorty.shorty.dto.request.RequestRegister;
+import com.shorty.shorty.dto.request.RequestShort;
 import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.dto.response.ResponseShort;
 import com.shorty.shorty.dto.response.ResponseStatistics;
+import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
+import com.shorty.shorty.service.ShortingService;
 import com.shorty.shorty.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +38,15 @@ public class AdministrationController {
 
 
 
-    //TODO short
-    @GetMapping("/administration/short")
-    public ResponseShort shortIt () {
+    @Autowired
+    ShortingService shortingService;
+    @Autowired
+    UrlRepository urlRepository;
 
-        return null;
+    //TODO CHECK short
+    @PostMapping(value = "/administration/short", consumes = "application/json", produces = "application/json")
+    public ResponseShort shorting (@RequestBody RequestShort requestShort) {
+        return shortingService.shorting(requestShort, urlRepository);
     }
 
 
