@@ -3,8 +3,12 @@ package com.shorty.shorty.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.shorty.shorty.dto.request.RequestRegister;
+import com.shorty.shorty.dto.request.RequestShort;
 import com.shorty.shorty.dto.response.ResponseRegister;
+import com.shorty.shorty.dto.response.ResponseShort;
+import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
+import com.shorty.shorty.service.ShortingService;
 import com.shorty.shorty.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-public class AdministrationControllerTests_requests {
+public class AdministrationControllerUnitTests {
     @Autowired
     MockMvc mockMvc;
     @Autowired
@@ -72,4 +76,51 @@ public class AdministrationControllerTests_requests {
         assertEquals(400, status);
     }
 
+
+
+    @MockBean
+    UrlRepository urlRepository;
+    @MockBean
+    ShortingService shortingService;
+
+    @Test
+    public void shorting_test_requests_goodRequest() throws Exception {
+        RequestShort requestShort = new RequestShort();
+        requestShort.setUrl("https://www.google.com");
+
+        ResponseShort response = new ResponseShort();
+        response.setDescription(null);
+        response.generateShortUrlId(null, urlRepository);
+
+        ShortingService shortingService = mock(ShortingService.class);
+        when(shortingService.shorting(requestShort, urlRepository)).thenReturn(response);
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/administration/short")
+                .contentType(MediaType.APPLICATION_JSON).content(ow.writeValueAsString(requestShort))).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(200, status);
+    }
+
+    @Test
+    public void shorting_test_requests_emptyRequest() throws Exception {
+        RequestShort requestShort = null;
+
+        ResponseShort response = new ResponseShort();
+        response.setDescription(null);
+        response.generateShortUrlId(null, urlRepository);
+
+        ShortingService shortingService = mock(ShortingService.class);
+        when(shortingService.shorting(requestShort, urlRepository)).thenReturn(response);
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/administration/short")
+                .contentType(MediaType.APPLICATION_JSON).content(ow.writeValueAsString(requestShort))).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(400, status);
+    }
 }
