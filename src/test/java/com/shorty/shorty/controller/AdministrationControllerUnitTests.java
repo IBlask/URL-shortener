@@ -2,7 +2,9 @@ package com.shorty.shorty.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.shorty.shorty.dto.request.RequestLogin;
 import com.shorty.shorty.dto.request.RequestRegister;
+import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.repository.UserRepository;
 import com.shorty.shorty.service.UserService;
@@ -23,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-public class AdministrationControllerTests_requests {
+public class AdministrationControllerUnitTests {
     @Autowired
     MockMvc mockMvc;
     @Autowired
@@ -67,6 +69,45 @@ public class AdministrationControllerTests_requests {
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/administration/register")
                 .contentType(MediaType.APPLICATION_JSON).content(ow.writeValueAsString(requestRegister))).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(400, status);
+    }
+
+
+
+    @Test
+    public void login_test_requests_goodRequest() throws Exception {
+        RequestLogin requestLogin = new RequestLogin("ime", "pass");
+
+        ResponseLogin response = new ResponseLogin();
+        response.setSuccess(true);
+
+        UserService userService = mock(UserService.class);
+        when(userService.login(requestLogin, userRepository)).thenReturn(response);
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/administration/login")
+                .contentType(MediaType.APPLICATION_JSON).content(ow.writeValueAsString(requestLogin))).andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(200, status);
+    }
+
+    @Test
+    public void login_test_requests_emptyRequest() throws Exception {
+        RequestLogin requestLogin = null;
+
+        ResponseLogin response = new ResponseLogin();
+
+        UserService userService = mock(UserService.class);
+        when(userService.login(requestLogin, userRepository)).thenReturn(response);
+
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/administration/login")
+                .contentType(MediaType.APPLICATION_JSON).content(ow.writeValueAsString(requestLogin))).andReturn();
 
         int status = mvcResult.getResponse().getStatus();
         assertEquals(400, status);

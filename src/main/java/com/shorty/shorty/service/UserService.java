@@ -1,6 +1,8 @@
 package com.shorty.shorty.service;
 
+import com.shorty.shorty.dto.request.RequestLogin;
 import com.shorty.shorty.dto.request.RequestRegister;
+import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UserRepository;
@@ -36,5 +38,21 @@ public class UserService {
         }
 
         return responseRegister;
+    }
+
+
+    public ResponseLogin login(RequestLogin requestLogin, UserRepository userRepository) {
+        ResponseLogin responseLogin = new ResponseLogin();
+
+        //is POST request empty or is any parameter missing
+        if (requestLogin.isEmpty() || requestLogin.accountIdIsBlank() || requestLogin.passwordIsBlank()) {
+            return responseLogin;
+        }
+        //are accountID and password in the database / is user registered
+        else if (requestLogin.accountIdAndPasswordAreMatching(userRepository)) {
+            responseLogin.setSuccess(true);
+        }
+
+        return responseLogin;
     }
 }
