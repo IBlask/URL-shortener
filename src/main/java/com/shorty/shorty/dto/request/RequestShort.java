@@ -1,5 +1,7 @@
 package com.shorty.shorty.dto.request;
 
+import org.apache.commons.validator.routines.UrlValidator;
+
 public class RequestShort {
     private String url;
     private int redirectType = 302;
@@ -35,5 +37,18 @@ public class RequestShort {
 
     public boolean urlIsBlank() {
         return url.isBlank();
+    }
+
+    public String EnteredUrlIsNotValid() {
+        UrlValidator urlValidator = new UrlValidator();
+
+        if (!urlValidator.isValid(this.url)) {
+            if (!this.url.contains("http://") && !this.url.contains("https://")) {
+                return "Entered URL is not valid! Please use 'http://' or 'https://'";
+            }
+            return "Entered URL is not valid!";
+        }
+
+        return null;
     }
 }

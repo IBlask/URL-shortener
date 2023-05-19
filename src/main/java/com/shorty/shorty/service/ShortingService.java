@@ -15,6 +15,7 @@ import java.util.Base64;
 public class ShortingService {
 
     public ResponseShort shorting(RequestShort requestShort, UrlRepository urlRepository, String authToken, UserRepository userRepository) {
+        String errorMessage;
         ResponseShort responseShort = new ResponseShort();
 
         //CHECKING USERNAME AND PASSWORD
@@ -56,6 +57,10 @@ public class ShortingService {
         //is url sent
         if (requestShort.urlIsBlank()) {
             responseShort.setDescription("Please enter your URL!");
+        }
+        //checking if entered URL is valid
+        else if ((errorMessage = requestShort.EnteredUrlIsNotValid()) != null) {
+            responseShort.setDescription(errorMessage);
         }
         //generating short URL
         else {
