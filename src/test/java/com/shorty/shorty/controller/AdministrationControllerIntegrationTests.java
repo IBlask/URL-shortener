@@ -2,10 +2,12 @@ package com.shorty.shorty.controller;
 
 import com.shorty.shorty.dto.request.RequestLogin;
 import com.shorty.shorty.dto.request.RequestRegister;
+
 import com.shorty.shorty.dto.request.RequestShort;
 import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.dto.response.ResponseShort;
+
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.util.Base64;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -450,6 +453,5 @@ public class AdministrationControllerIntegrationTests {
         assertNull(response.getShortUrl());
         assertEquals("Please enter your password.", response.getDescription());
     }
-
 
 }

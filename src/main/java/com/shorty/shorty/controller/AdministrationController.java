@@ -1,5 +1,6 @@
 package com.shorty.shorty.controller;
 
+import com.shorty.shorty.dto.request.RequestLogin;
 import com.shorty.shorty.dto.request.RequestRegister;
 import com.shorty.shorty.dto.request.RequestShort;
 import com.shorty.shorty.dto.response.ResponseLogin;
@@ -26,11 +27,9 @@ public class AdministrationController {
 
 
 
-    //TODO prijava
-    @GetMapping("/administration/login")
-    public ResponseLogin login () {
-
-        return null;
+    @PostMapping(value = "/administration/login", consumes = "application/json", produces = "application/json")
+    public ResponseLogin login (@RequestBody RequestLogin requestLogin) {
+        return userService.login(requestLogin, userRepository);
     }
 
 
