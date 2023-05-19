@@ -1,7 +1,9 @@
 package com.shorty.shorty.controller;
 
+import com.shorty.shorty.dto.request.RequestLogin;
 import com.shorty.shorty.dto.request.RequestRegister;
 import com.shorty.shorty.dto.request.RequestShort;
+import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.dto.response.ResponseShort;
 import org.junit.Test;
@@ -132,6 +134,122 @@ public class AdministrationControllerIntegrationTests {
         assertFalse(response.isSuccess());
         assertEquals("Please enter your username!", response.getDescription());
         assertNull(response.getPassword());
+    }
+
+
+
+    @Test
+    public void login_test_registeredUser() throws Exception {
+        //adding new user to database
+        TestRestTemplate restTemplate_reg = new TestRestTemplate();
+        final String baseUrl_reg = "http://localhost:8080/administration/register";
+        URI uri_reg = new URI(baseUrl_reg);
+        RequestRegister requestRegister = new RequestRegister("ime log");
+
+        HttpHeaders headers_reg = new HttpHeaders();
+        headers_reg.set("X-COM-PERSIST", "true");
+
+        HttpEntity<RequestRegister> request_reg = new HttpEntity<>(requestRegister, headers_reg);
+
+        ResponseEntity<ResponseRegister> result_reg = restTemplate_reg.postForEntity(uri_reg, request_reg, ResponseRegister.class);
+        ResponseRegister response_reg = result_reg.getBody();
+
+        if (!response_reg.isSuccess()) {
+            fail("Error with entering data into the database! Description: '" + response_reg.getDescription() + "'.");
+        }
+
+        //testing login
+        TestRestTemplate restTemplate = new TestRestTemplate();
+        final String baseUrl = "http://localhost:8080/administration/login";
+        URI uri = new URI(baseUrl);
+        RequestLogin requestLogin = new RequestLogin("ime log", response_reg.getPassword());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-COM-PERSIST", "true");
+
+        HttpEntity<RequestLogin> request = new HttpEntity<>(requestLogin, headers);
+
+        ResponseEntity<ResponseLogin> result = restTemplate.postForEntity(uri, request, ResponseLogin.class);
+        ResponseLogin response = result.getBody();
+
+        assertEquals(200, result.getStatusCodeValue());
+        assertTrue(response.isSuccess());
+    }
+
+    @Test
+    public void login_test_unregisteredUser() throws Exception {
+        TestRestTemplate restTemplate = new TestRestTemplate();
+        final String baseUrl = "http://localhost:8080/administration/login";
+        URI uri = new URI(baseUrl);
+        RequestLogin requestLogin = new RequestLogin("novo ime log", "AbCdEf78");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-COM-PERSIST", "true");
+
+        HttpEntity<RequestLogin> request = new HttpEntity<>(requestLogin, headers);
+
+        ResponseEntity<ResponseLogin> result = restTemplate.postForEntity(uri, request, ResponseLogin.class);
+        ResponseLogin response = result.getBody();
+
+        assertEquals(200, result.getStatusCodeValue());
+        assertFalse(response.isSuccess());
+    }
+
+    @Test
+    public void login_test_emptyRequest() throws Exception {
+        TestRestTemplate restTemplate = new TestRestTemplate();
+        final String baseUrl = "http://localhost:8080/administration/login";
+        URI uri = new URI(baseUrl);
+        RequestLogin requestLogin = new RequestLogin();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-COM-PERSIST", "true");
+
+        HttpEntity<RequestLogin> request = new HttpEntity<>(requestLogin, headers);
+
+        ResponseEntity<ResponseLogin> result = restTemplate.postForEntity(uri, request, ResponseLogin.class);
+        ResponseLogin response = result.getBody();
+
+        assertEquals(200, result.getStatusCodeValue());
+        assertFalse(response.isSuccess());
+    }
+
+    @Test
+    public void login_test_blankAccountID() throws Exception {
+        TestRestTemplate restTemplate = new TestRestTemplate();
+        final String baseUrl = "http://localhost:8080/administration/login";
+        URI uri = new URI(baseUrl);
+        RequestLogin requestLogin = new RequestLogin("", "password");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-COM-PERSIST", "true");
+
+        HttpEntity<RequestLogin> request = new HttpEntity<>(requestLogin, headers);
+
+        ResponseEntity<ResponseLogin> result = restTemplate.postForEntity(uri, request, ResponseLogin.class);
+        ResponseLogin response = result.getBody();
+
+        assertEquals(200, result.getStatusCodeValue());
+        assertFalse(response.isSuccess());
+    }
+
+    @Test
+    public void login_test_blankPassword() throws Exception {
+        TestRestTemplate restTemplate = new TestRestTemplate();
+        final String baseUrl = "http://localhost:8080/administration/login";
+        URI uri = new URI(baseUrl);
+        RequestLogin requestLogin = new RequestLogin("ime2 log", "");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-COM-PERSIST", "true");
+
+        HttpEntity<RequestLogin> request = new HttpEntity<>(requestLogin, headers);
+
+        ResponseEntity<ResponseLogin> result = restTemplate.postForEntity(uri, request, ResponseLogin.class);
+        ResponseLogin response = result.getBody();
+
+        assertEquals(200, result.getStatusCodeValue());
+        assertFalse(response.isSuccess());
     }
 
 
