@@ -187,4 +187,48 @@ public class ShortingServiceTests {
         assertEquals("Please enter your password.", response.getDescription());
         assertNull(response.getShortUrl());
     }
+
+    @Test
+    public void short_test_EnteredUrlIsMissingHttp() {
+        RequestShort request = mock(RequestShort.class);
+        request.setUrl("www.google.com/");
+        when(request.isEmpty()).thenReturn(false);
+        when(request.urlIsBlank()).thenReturn(false);
+        when(request.EnteredUrlIsNotValid()).thenReturn("Entered URL is not valid! Please use 'http://' or 'https://'");
+
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword("pass");
+        when(userRepository.findByUsername("user")).thenReturn(user);
+
+        String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
+        authToken = "Basic" + authToken;
+
+        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+
+        assertNull(response.getShortUrl());
+        assertEquals("Entered URL is not valid! Please use 'http://' or 'https://'", response.getDescription());
+    }
+
+    @Test
+    public void short_test_EnteredUrlIsNotValid() {
+        RequestShort request = mock(RequestShort.class);
+        request.setUrl("http://www.google.com/a b/");
+        when(request.isEmpty()).thenReturn(false);
+        when(request.urlIsBlank()).thenReturn(false);
+        when(request.EnteredUrlIsNotValid()).thenReturn("Entered URL is not valid!");
+
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword("pass");
+        when(userRepository.findByUsername("user")).thenReturn(user);
+
+        String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
+        authToken = "Basic" + authToken;
+
+        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+
+        assertNull(response.getShortUrl());
+        assertEquals("Entered URL is not valid!", response.getDescription());
+    }
 }
