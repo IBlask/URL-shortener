@@ -12,8 +12,8 @@ public class ResponseShort {
         return shortUrl;
     }
 
-    public void setShortUrl(String shortUrl) {
-        this.shortUrl = shortUrl;
+    public void setShortUrl(String shortUrlId) {
+        this.shortUrl = "http://localhost:8080/" + shortUrlId;
     }
 
     public String generateShortUrlId(String lastShortUrlId, UrlRepository urlRepository) {

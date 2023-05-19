@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Base64;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -92,8 +94,10 @@ public class AdministrationControllerUnitTests {
         response.setDescription(null);
         response.generateShortUrlId(null, urlRepository);
 
+        String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
+
         ShortingService shortingService = mock(ShortingService.class);
-        when(shortingService.shorting(requestShort, urlRepository)).thenReturn(response);
+        when(shortingService.shorting(requestShort, urlRepository, authToken, userRepository)).thenReturn(response);
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
@@ -112,8 +116,10 @@ public class AdministrationControllerUnitTests {
         response.setDescription(null);
         response.generateShortUrlId(null, urlRepository);
 
+        String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
+
         ShortingService shortingService = mock(ShortingService.class);
-        when(shortingService.shorting(requestShort, urlRepository)).thenReturn(response);
+        when(shortingService.shorting(requestShort, urlRepository, authToken, userRepository)).thenReturn(response);
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 

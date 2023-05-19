@@ -11,28 +11,28 @@ public class Url {
     private int url_id;
     @Column(name = "full_url")
     private String fullUrl;
-    @Column(name = "short_url")
-    private String shortUrl;
     @Column(name = "short_url_id")
     private String shortUrlId;
     @Column(name = "redirects")
     private int redirects = 0;
     @Column(name = "redirect_type")
     private int redirectType = 302;
+    @Column(name = "user_id")
+    private int userId;
 
     public Url() {
         super();
     }
 
-    public Url(String fullUrl, String shortUrlId, int redirectType) {
+    public Url(String fullUrl, String shortUrlId, int redirectType, int userId) {
         this.fullUrl = fullUrl;
         this.shortUrlId = shortUrlId;
-        this.shortUrl = "http://localhost:8080/" + shortUrlId;
         this.setRedirectType(redirectType);
+        this.userId = userId;
     }
 
-    public Url(String fullUrl, String shortUrlId) {
-        this(fullUrl, shortUrlId, 302);
+    public Url(String fullUrl, String shortUrlId, int userId) {
+        this(fullUrl, shortUrlId, 302, userId);
     }
 
     public String getFullUrl() {
@@ -43,17 +43,12 @@ public class Url {
         this.fullUrl = fullUrl;
     }
 
-    public String getShortUrl() {
-        return shortUrl;
-    }
-
-    public void setShortUrl(String shortUrlId) {
-        this.shortUrlId = shortUrlId;
-        this.shortUrl = "http://localhost:8080/" + shortUrlId;
-    }
-
     public String getShortUrlId() {
         return shortUrlId;
+    }
+
+    public void setShortUrlId(String shortUrlId) {
+        this.shortUrlId = shortUrlId;
     }
 
     public void incrementRedirects() {
@@ -71,5 +66,9 @@ public class Url {
         else {
             this.redirectType = 302;
         }
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }
