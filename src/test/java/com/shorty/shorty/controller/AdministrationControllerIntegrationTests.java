@@ -2,16 +2,22 @@ package com.shorty.shorty.controller;
 
 import com.shorty.shorty.dto.request.RequestLogin;
 import com.shorty.shorty.dto.request.RequestRegister;
+import com.shorty.shorty.dto.request.RequestShort;
 import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
+import com.shorty.shorty.dto.response.ResponseShort;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -247,6 +253,194 @@ public class AdministrationControllerIntegrationTests {
 
         assertEquals(200, result.getStatusCodeValue());
         assertFalse(response.isSuccess());
+    }
+
+
+
+    @Test
+    public void statistics_test_twoUsers() throws Exception {
+        //ADDING USER1 TO DB
+        TestRestTemplate restTemplate_reg = new TestRestTemplate();
+        final String baseUrl_reg = "http://localhost:8080/administration/register";
+        URI uri_reg = new URI(baseUrl_reg);
+        RequestRegister requestRegister = new RequestRegister("statuser1");
+
+        HttpHeaders headers_reg = new HttpHeaders();
+        headers_reg.set("X-COM-PERSIST", "true");
+
+        HttpEntity<RequestRegister> request_reg = new HttpEntity<>(requestRegister, headers_reg);
+
+        ResponseEntity<ResponseRegister> result_reg = restTemplate_reg.postForEntity(uri_reg, request_reg, ResponseRegister.class);
+        ResponseRegister response_reg = (ResponseRegister) result_reg.getBody();
+
+        if(result_reg.getStatusCodeValue() == 400 || !response_reg.isSuccess()) {
+            fail("Error occurred while registering new user!");
+        }
+
+        //ADDING USER2 TO DB
+        RequestRegister requestRegister2 = new RequestRegister("statuser2");
+
+        HttpHeaders headers_reg2 = new HttpHeaders();
+        headers_reg.set("X-COM-PERSIST", "true");
+
+        HttpEntity<RequestRegister> request_reg2 = new HttpEntity<>(requestRegister2, headers_reg2);
+
+        ResponseEntity<ResponseRegister> result_reg2 = restTemplate_reg.postForEntity(uri_reg, request_reg2, ResponseRegister.class);
+        ResponseRegister response_reg2 = (ResponseRegister) result_reg2.getBody();
+
+        if(result_reg2.getStatusCodeValue() == 400 || !response_reg2.isSuccess()) {
+            fail("Error occurred while registering new user!");
+        }
+
+        //SHORTING - USER1
+        TestRestTemplate restTemplate_short = new TestRestTemplate();
+        final String baseUrl_short = "http://localhost:8080/administration/short";
+        URI uri_short = new URI(baseUrl_short);
+        RequestShort requestShort = new RequestShort("https://www.google.com/", 302);
+
+        HttpHeaders headers_short = new HttpHeaders();
+        headers_short.set("X-COM-PERSIST", "true");
+        String credentials = Base64.getEncoder().encodeToString(("statuser1:"+response_reg.getPassword()).getBytes("UTF-8"));
+        headers_short.set("Authorization", "Basic" + credentials);
+
+        HttpEntity<RequestShort> request_short = new HttpEntity<>(requestShort, headers_short);
+
+        ResponseEntity<ResponseShort> result_short = restTemplate_short.postForEntity(uri_short, request_short, ResponseShort.class);
+        ResponseShort response_short = result_short.getBody();
+
+        if(result_short.getStatusCodeValue() == 400 || response_short == null) {
+            fail("Error occurred while shorting!");
+        }
+
+
+        RequestShort requestShort2 = new RequestShort("https://www.google.hr/", 302);
+
+        HttpEntity<RequestShort> request_short2 = new HttpEntity<>(requestShort2, headers_short);
+
+        ResponseEntity<ResponseShort> result_short2 = restTemplate_short.postForEntity(uri_short, request_short2, ResponseShort.class);
+        ResponseShort response_short2 = result_short.getBody();
+
+        if(result_short2.getStatusCodeValue() == 400 || response_short2 == null) {
+            fail("Error occurred while shorting!");
+        }
+
+        //SHORTING - USER2
+        RequestShort requestShort3 = new RequestShort("https://www.google.co.uk/", 302);
+
+        HttpHeaders headers_short3 = new HttpHeaders();
+        headers_short3.set("X-COM-PERSIST", "true");
+        String credentials2 = Base64.getEncoder().encodeToString(("statuser2:"+response_reg2.getPassword()).getBytes("UTF-8"));
+        headers_short3.set("Authorization", "Basic" + credentials2);
+
+        HttpEntity<RequestShort> request_short3 = new HttpEntity<>(requestShort3, headers_short3);
+
+        ResponseEntity<ResponseShort> result_short3 = restTemplate_short.postForEntity(uri_short, request_short3, ResponseShort.class);
+        ResponseShort response_short3 = result_short3.getBody();
+
+        if(result_short3.getStatusCodeValue() == 400 || response_short3 == null) {
+            fail("Error occurred while shorting!");
+        }
+
+        //TESTING
+        TestRestTemplate restTemplate = new TestRestTemplate();
+        final String baseUrl = "http://localhost:8080/administration/statistics";
+        URI uri = new URI(baseUrl);
+
+        HttpHeaders headers = new HttpHeaders();
+        String credentials_stats = Base64.getEncoder().encodeToString(("statuser1:" + response_reg.getPassword()).getBytes("UTF-8"));
+        headers.set("Authorization", "Basic" + credentials_stats);
+
+        HttpEntity<Object> request = new HttpEntity<>(null, headers);
+
+        ResponseEntity<Map> result = restTemplate.exchange(baseUrl, HttpMethod.GET, request, Map.class);
+        Map<String, Integer> response = result.getBody();
+
+        Map<String, Integer> map = new HashMap<>();
+        map.put("https://www.google.com/", 0);
+        map.put("https://www.google.hr/", 0);
+
+        assertEquals(200, result.getStatusCodeValue());
+        assertEquals(map, response);
+    }
+
+    @Test
+    public void statistics_test_emptyDB() throws Exception {
+        //ADDING USER TO DB
+        TestRestTemplate restTemplate_reg = new TestRestTemplate();
+        final String baseUrl_reg = "http://localhost:8080/administration/register";
+        URI uri_reg = new URI(baseUrl_reg);
+        RequestRegister requestRegister = new RequestRegister("empty_db_user");
+
+        HttpHeaders headers_reg = new HttpHeaders();
+        headers_reg.set("X-COM-PERSIST", "true");
+
+        HttpEntity<RequestRegister> request_reg = new HttpEntity<>(requestRegister, headers_reg);
+
+        ResponseEntity<ResponseRegister> result_reg = restTemplate_reg.postForEntity(uri_reg, request_reg, ResponseRegister.class);
+        ResponseRegister response_reg = (ResponseRegister) result_reg.getBody();
+
+        if(result_reg.getStatusCodeValue() == 400 || !response_reg.isSuccess()) {
+            fail("Error occurred while registering new user!");
+        }
+
+        //TESTING
+        TestRestTemplate restTemplate = new TestRestTemplate();
+        final String baseUrl = "http://localhost:8080/administration/statistics";
+        URI uri = new URI(baseUrl);
+
+        HttpHeaders headers = new HttpHeaders();
+        String credentials_stats = Base64.getEncoder().encodeToString(("empty_db_user:" + response_reg.getPassword()).getBytes("UTF-8"));
+        headers.set("Authorization", "Basic" + credentials_stats);
+
+        HttpEntity<Object> request = new HttpEntity<>(null, headers);
+
+        ResponseEntity<Map> result = restTemplate.exchange(baseUrl, HttpMethod.GET, request, Map.class);
+        Map<String, Integer> response = result.getBody();
+
+        Map<String, Integer> empty_map = new HashMap<>();
+
+        assertEquals(200, result.getStatusCodeValue());
+        assertEquals(empty_map, response);
+    }
+
+    @Test
+    public void statistics_test_missingAuthToken() throws Exception {
+        TestRestTemplate restTemplate = new TestRestTemplate();
+        final String baseUrl = "http://localhost:8080/administration/statistics";
+        URI uri = new URI(baseUrl);
+
+        HttpHeaders headers = new HttpHeaders();
+
+        HttpEntity<Object> request = new HttpEntity<>(null, headers);
+
+        ResponseEntity<Map> result = restTemplate.exchange(baseUrl, HttpMethod.GET, request, Map.class);
+        Map<String, Integer> response = result.getBody();
+
+        Map<String, Integer> empty_map = new HashMap<>();
+
+        assertEquals(200, result.getStatusCodeValue());
+        assertNull(response);
+    }
+
+    @Test
+    public void statistics_test_wrongAuthToken() throws Exception {
+        TestRestTemplate restTemplate = new TestRestTemplate();
+        final String baseUrl = "http://localhost:8080/administration/statistics";
+        URI uri = new URI(baseUrl);
+
+        HttpHeaders headers = new HttpHeaders();
+        String credentials_stats = Base64.getEncoder().encodeToString(("wrong_user:wrong_pass").getBytes("UTF-8"));
+        headers.set("Authorization", "Basic" + credentials_stats);
+
+        HttpEntity<Object> request = new HttpEntity<>(null, headers);
+
+        ResponseEntity<Map> result = restTemplate.exchange(baseUrl, HttpMethod.GET, request, Map.class);
+        Map<String, Integer> response = result.getBody();
+
+        Map<String, Integer> empty_map = new HashMap<>();
+
+        assertEquals(200, result.getStatusCodeValue());
+        assertNull(response);
     }
 
 }
