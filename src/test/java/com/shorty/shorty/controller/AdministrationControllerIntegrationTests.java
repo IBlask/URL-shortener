@@ -1,9 +1,8 @@
 package com.shorty.shorty.controller;
 
-import com.shorty.shorty.dto.request.RequestLogin;
+import com.shorty.shorty.ShortyApplication;
 import com.shorty.shorty.dto.request.RequestRegister;
 import com.shorty.shorty.dto.request.RequestShort;
-import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.dto.response.ResponseShort;
 import org.junit.Test;
@@ -26,7 +25,7 @@ public class AdministrationControllerIntegrationTests {
     @Test
     public void register_test_goodRequest() throws Exception {
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/register";
+        final String baseUrl = "http://localhost/administration/register";
         URI uri = new URI(baseUrl);
         RequestRegister requestRegister = new RequestRegister("ime reg");
 
@@ -56,7 +55,7 @@ public class AdministrationControllerIntegrationTests {
     public void register_test_sameUsername() throws Exception {
         //adding user to database
         TestRestTemplate restTemplate_add = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/register";
+        final String baseUrl = "http://localhost/administration/register";
         URI uri = new URI(baseUrl);
         RequestRegister requestRegister_add = new RequestRegister("isto ime reg");
 
@@ -97,7 +96,7 @@ public class AdministrationControllerIntegrationTests {
     @Test
     public void register_test_badRequest() throws Exception {
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/register";
+        final String baseUrl = "http://localhost/administration/register";
         URI uri = new URI(baseUrl);
         RequestRegister requestRegister = new RequestRegister();
 
@@ -118,7 +117,7 @@ public class AdministrationControllerIntegrationTests {
     @Test
     public void register_test_blankRequest() throws Exception {
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/register";
+        final String baseUrl = "http://localhost/administration/register";
         URI uri = new URI(baseUrl);
         RequestRegister requestRegister = new RequestRegister("");
 
@@ -142,7 +141,7 @@ public class AdministrationControllerIntegrationTests {
     public void login_test_registeredUser() throws Exception {
         //adding new user to database
         TestRestTemplate restTemplate_reg = new TestRestTemplate();
-        final String baseUrl_reg = "http://localhost:8080/administration/register";
+        final String baseUrl_reg = "http://localhost/administration/register";
         URI uri_reg = new URI(baseUrl_reg);
         RequestRegister requestRegister = new RequestRegister("ime log");
 
@@ -160,7 +159,7 @@ public class AdministrationControllerIntegrationTests {
 
         //testing login
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/login";
+        final String baseUrl = "http://localhost/administration/login";
         URI uri = new URI(baseUrl);
         RequestLogin requestLogin = new RequestLogin("ime log", response_reg.getPassword());
 
@@ -179,7 +178,7 @@ public class AdministrationControllerIntegrationTests {
     @Test
     public void login_test_unregisteredUser() throws Exception {
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/login";
+        final String baseUrl = "http://localhost/administration/login";
         URI uri = new URI(baseUrl);
         RequestLogin requestLogin = new RequestLogin("novo ime log", "AbCdEf78");
 
@@ -198,7 +197,7 @@ public class AdministrationControllerIntegrationTests {
     @Test
     public void login_test_emptyRequest() throws Exception {
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/login";
+        final String baseUrl = "http://localhost/administration/login";
         URI uri = new URI(baseUrl);
         RequestLogin requestLogin = new RequestLogin();
 
@@ -217,7 +216,7 @@ public class AdministrationControllerIntegrationTests {
     @Test
     public void login_test_blankAccountID() throws Exception {
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/login";
+        final String baseUrl = "http://localhost/administration/login";
         URI uri = new URI(baseUrl);
         RequestLogin requestLogin = new RequestLogin("", "password");
 
@@ -236,7 +235,7 @@ public class AdministrationControllerIntegrationTests {
     @Test
     public void login_test_blankPassword() throws Exception {
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/login";
+        final String baseUrl = "http://localhost/administration/login";
         URI uri = new URI(baseUrl);
         RequestLogin requestLogin = new RequestLogin("ime2 log", "");
 
@@ -258,7 +257,7 @@ public class AdministrationControllerIntegrationTests {
     public void shorting_test_goodRequest() throws Exception {
         //ADDING USER TO DB
         TestRestTemplate restTemplate_reg = new TestRestTemplate();
-        final String baseUrl_reg = "http://localhost:8080/administration/register";
+        final String baseUrl_reg = "http://localhost/administration/register";
         URI uri_reg = new URI(baseUrl_reg);
         RequestRegister requestRegister = new RequestRegister("user");
 
@@ -276,7 +275,7 @@ public class AdministrationControllerIntegrationTests {
 
         //TESTING
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/short";
+        final String baseUrl = "http://localhost/administration/short";
         URI uri = new URI(baseUrl);
         RequestShort requestShort = new RequestShort();
         requestShort.setUrl("https://www.google.com/");
@@ -298,7 +297,7 @@ public class AdministrationControllerIntegrationTests {
         boolean b = m.matches();
 
         assertEquals(200, result.getStatusCodeValue());
-        assertTrue(shortUrl.contains("http://localhost:8080/"));
+        assertTrue(shortUrl.contains(ShortyApplication.getAddress()));
         assertTrue(b);
     }
 
@@ -306,7 +305,7 @@ public class AdministrationControllerIntegrationTests {
     public void shorting_test_badRequest() throws Exception {
         //ADDING USER TO DB
         TestRestTemplate restTemplate_reg = new TestRestTemplate();
-        final String baseUrl_reg = "http://localhost:8080/administration/register";
+        final String baseUrl_reg = "http://localhost/administration/register";
         URI uri_reg = new URI(baseUrl_reg);
         RequestRegister requestRegister = new RequestRegister("user2");
 
@@ -324,7 +323,7 @@ public class AdministrationControllerIntegrationTests {
 
         //TESTING
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/short";
+        final String baseUrl = "http://localhost/administration/short";
         URI uri = new URI(baseUrl);
         RequestShort requestShort = new RequestShort();
 
@@ -347,7 +346,7 @@ public class AdministrationControllerIntegrationTests {
     public void shorting_test_blankRequest() throws Exception {
         //ADDING USER TO DB
         TestRestTemplate restTemplate_reg = new TestRestTemplate();
-        final String baseUrl_reg = "http://localhost:8080/administration/register";
+        final String baseUrl_reg = "http://localhost/administration/register";
         URI uri_reg = new URI(baseUrl_reg);
         RequestRegister requestRegister = new RequestRegister("user3");
 
@@ -365,7 +364,7 @@ public class AdministrationControllerIntegrationTests {
 
         //TESTING
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/short";
+        final String baseUrl = "http://localhost/administration/short";
         URI uri = new URI(baseUrl);
         RequestShort requestShort = new RequestShort();
         requestShort.setUrl("");
@@ -388,7 +387,7 @@ public class AdministrationControllerIntegrationTests {
     @Test
     public void shorting_test_missingAuthToken() throws Exception {
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/short";
+        final String baseUrl = "http://localhost/administration/short";
         URI uri = new URI(baseUrl);
         RequestShort requestShort = new RequestShort();
 
@@ -408,7 +407,7 @@ public class AdministrationControllerIntegrationTests {
     @Test
     public void shorting_test_missingUsernameInAuthToken() throws Exception {
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/short";
+        final String baseUrl = "http://localhost/administration/short";
         URI uri = new URI(baseUrl);
         RequestShort requestShort = new RequestShort();
         requestShort.setUrl("https://www.google.com/");
@@ -431,7 +430,7 @@ public class AdministrationControllerIntegrationTests {
     @Test
     public void shorting_test_missingPasswordInAuthToken() throws Exception {
         TestRestTemplate restTemplate = new TestRestTemplate();
-        final String baseUrl = "http://localhost:8080/administration/short";
+        String baseUrl = "http://localhost/administration/short";
         URI uri = new URI(baseUrl);
         RequestShort requestShort = new RequestShort();
         requestShort.setUrl("https://www.google.com/");

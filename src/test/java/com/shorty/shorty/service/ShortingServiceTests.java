@@ -1,5 +1,6 @@
 package com.shorty.shorty.service;
 
+import com.shorty.shorty.ShortyApplication;
 import com.shorty.shorty.dto.request.RequestShort;
 import com.shorty.shorty.dto.response.ResponseShort;
 import com.shorty.shorty.entity.User;
@@ -57,7 +58,7 @@ public class ShortingServiceTests {
         Matcher m = p.matcher(shortUrlId);
         boolean b = m.matches();
 
-        assertTrue(response.getShortUrl().contains("http://localhost:8080/"));
+        assertTrue(response.getShortUrl().contains(ShortyApplication.getAddress()));
         assertTrue(b);
         assertNull(response.getDescription());
     }

@@ -1,6 +1,7 @@
 package com.shorty.shorty.dto.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.shorty.shorty.ShortyApplication;
 import com.shorty.shorty.repository.UrlRepository;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
@@ -13,7 +14,7 @@ public class ResponseShort {
     }
 
     public void setShortUrl(String shortUrlId) {
-        this.shortUrl = "http://localhost:8080/" + shortUrlId;
+        this.shortUrl = ShortyApplication.getAddress() + shortUrlId;
     }
 
     public String generateShortUrlId(String lastShortUrlId, UrlRepository urlRepository) {
