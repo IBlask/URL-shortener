@@ -64,7 +64,11 @@ public class ShortingService {
         }
         //generating short URL
         else {
-            String lastShortUrlId = urlRepository.findLastShortUrlId();;
+            Url lastUrl = urlRepository.findFirstByOrderByUrlIdDesc();
+            String lastShortUrlId = null;
+            if (lastUrl != null) {
+                lastShortUrlId = lastUrl.getShortUrlId();
+            }
             String shortUrlId = responseShort.generateShortUrlId(lastShortUrlId, urlRepository);
             if (shortUrlId != null) {
                 Url url = new Url(requestShort.getUrl(), shortUrlId, requestShort.getRedirectType(), user.getUser_id());

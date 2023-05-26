@@ -49,14 +49,14 @@ public class ResponseShort {
             }
         }
 
-        if (urlRepository.shortUrlIdExistsInDatabase(newShortUrlId)) {
+        if (urlRepository.findByShortUrlId(newShortUrlId) != null) {
             return this.generateShortUrlId(newShortUrlId, urlRepository);
         }
         //if shortUrlId exceed DB limit (8 characters) -> start from beginning
         if (newShortUrlId.length() > 8) {
             newShortUrlId = "abcde";
-            if (urlRepository.shortUrlIdExistsInDatabase(newShortUrlId)) {
-                if (urlRepository.deleteUrlByShortUrlId(newShortUrlId) == 0) {
+            if (urlRepository.findByShortUrlId(newShortUrlId) != null) {
+                if (urlRepository.deleteByShortUrlId(newShortUrlId) == 0) {
                     this.description = "Error occurred while accessing the database. Please try again.";
                     return null;
                 }

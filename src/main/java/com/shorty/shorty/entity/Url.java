@@ -8,7 +8,7 @@ public class Url {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "url_id")
-    private int url_id;
+    private int urlId;
     @Column(name = "full_url")
     private String fullUrl;
     @Column(name = "short_url_id")
