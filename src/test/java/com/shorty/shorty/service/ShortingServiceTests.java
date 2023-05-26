@@ -3,6 +3,7 @@ package com.shorty.shorty.service;
 import com.shorty.shorty.ShortyApplication;
 import com.shorty.shorty.dto.request.RequestShort;
 import com.shorty.shorty.dto.response.ResponseShort;
+import com.shorty.shorty.entity.Url;
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
@@ -231,6 +232,31 @@ public class ShortingServiceTests {
 
         assertNull(response.getShortUrl());
         assertEquals("Entered URL is not valid!", response.getDescription());
+    }
+
+    @Test
+    public void short_test_EnteredUrlIsAlreadyInDB() {
+        System.out.println(ShortyApplication.getAddress());
+        RequestShort request = mock(RequestShort.class);
+        request.setUrl("http://www.google.com/");
+        when(request.isEmpty()).thenReturn(false);
+        when(request.urlIsBlank()).thenReturn(false);
+
+        Url url = new Url(request.getUrl(), "abcdz", 0);
+        when(urlRepository.findByFullUrl(request.getUrl())).thenReturn(url);
+
+        User user = new User();
+        user.setUsername("user");
+        user.setPassword("pass");
+        when(userRepository.findByUsername("user")).thenReturn(user);
+
+        String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
+        authToken = "Basic" + authToken;
+
+        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+
+        assertNull(response.getDescription());
+        assertEquals("abcdz", response.getShortUrl().substring(response.getShortUrl().length()-5));
     }
 
 

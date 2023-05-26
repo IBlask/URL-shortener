@@ -35,6 +35,14 @@ public class ShortingService {
             return responseShort;
         }
 
+        //CHECK IF ENTERED URL IS ALREADY SHORTENED
+        Url url = urlRepository.findByFullUrl(requestShort.getUrl());
+        if (url != null) {
+            responseShort.setShortUrl(url.getShortUrlId());
+            responseShort.setDescription(null);
+            return responseShort;
+        }
+
         //GENERATE SHORT URL
         return generateShortUrl(requestShort, responseShort, user, urlRepository);
     }
