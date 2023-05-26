@@ -2,10 +2,8 @@ package com.shorty.shorty.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.shorty.shorty.dto.request.RequestLogin;
 import com.shorty.shorty.dto.request.RequestRegister;
 import com.shorty.shorty.dto.request.RequestShort;
-import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.dto.response.ResponseShort;
 import com.shorty.shorty.repository.UrlRepository;
@@ -133,7 +131,7 @@ public class AdministrationControllerUnitTests {
 
         ResponseShort response = new ResponseShort();
         response.setDescription(null);
-        response.generateShortUrlId(null, urlRepository);
+        response.setShortUrl("abcde");
 
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
 
@@ -155,7 +153,7 @@ public class AdministrationControllerUnitTests {
 
         ResponseShort response = new ResponseShort();
         response.setDescription(null);
-        response.generateShortUrlId(null, urlRepository);
+        response.setShortUrl("abcde");
 
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
 

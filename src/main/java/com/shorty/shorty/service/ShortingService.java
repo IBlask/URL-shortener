@@ -40,6 +40,7 @@ public class ShortingService {
     }
 
 
+
     private Pair<String, User> checkAuthToken(String authToken, UserRepository userRepository) {
         User user = new User();
 
@@ -98,8 +99,17 @@ public class ShortingService {
             lastShortUrlId = lastUrl.getShortUrlId();
         }
 
-        String shortUrlId = responseShort.generateShortUrlId(lastShortUrlId, urlRepository);
-        if (shortUrlId != null) {
+        //Pair<newShortUrlId, errorMessage>
+        Pair<String, String> returnPair = generateShortUrlId(lastShortUrlId, urlRepository);
+        String shortUrlId = returnPair.getFirst();
+        String errorMessage = returnPair.getSecond();
+
+        if (!errorMessage.isEmpty()) {
+            responseShort.setDescription(errorMessage);
+            return responseShort;
+        }
+
+        if (!shortUrlId.isEmpty()) {
             Url url = new Url(requestShort.getUrl(), shortUrlId, requestShort.getRedirectType(), user.getUser_id());
             urlRepository.save(url);
             responseShort.setShortUrl(url.getShortUrlId());
@@ -107,5 +117,75 @@ public class ShortingService {
         }
 
         return responseShort;
+    }
+
+
+
+    public Pair<String, String> generateShortUrlId(String lastShortUrlId, UrlRepository urlRepository) {
+        String newShortUrlId = incrementLastShortUrlId(lastShortUrlId);
+
+        //if shortUrlId exceed DB limit (8 characters) -> start from beginning
+        if (newShortUrlId.length() > 8) {
+            newShortUrlId = "abcde";
+        }
+
+        //if shortUrlId exists in the database -> replace it with the new url
+        if (shortUrlIdExistsInDB(newShortUrlId, urlRepository)) {
+            String errorMessage = deleteExistingUrlFromDB(newShortUrlId, urlRepository);
+            if (errorMessage != null) {
+                return Pair.of("", errorMessage);
+            }
+        }
+
+        return Pair.of(newShortUrlId, "");
+    }
+
+    private String incrementLastShortUrlId(String lastShortUrlId) {
+        String newShortUrlId = "abcde";
+
+        if (lastShortUrlId != null) {
+            char[] l = lastShortUrlId.toCharArray();
+            if (l[l.length-1] == 'z') {
+                int len = l.length - 1;
+                while (len > 0) {
+                    if (l[len-1] != 'z') {
+                        l[len-1]++;
+                        for (int i = len; i < l.length; i++) {
+                            l[i] = 'a';
+                        }
+                        break;
+                    }
+                    len--;
+                }
+                newShortUrlId = String.valueOf(l);
+                //if all characters are 'z' -> append 'a' on default ShortUrlId
+                if (len == 0) {
+                    newShortUrlId = "abcde";
+                    for (int i = 0; i <= l.length - 5; i++) {
+                        newShortUrlId += "a";
+                    }
+                }
+            }
+            else {
+                l[l.length-1]++;
+                newShortUrlId = String.valueOf(l);
+            }
+        }
+
+        return newShortUrlId;
+    }
+
+    private boolean shortUrlIdExistsInDB(String shortUrlId, UrlRepository urlRepository) {
+        Url url = urlRepository.findByShortUrlId(shortUrlId);
+        return url != null;
+    }
+
+    private String deleteExistingUrlFromDB(String shortUrlId, UrlRepository urlRepository) {
+        if (urlRepository.findByShortUrlId(shortUrlId) != null) {
+            if (urlRepository.deleteByShortUrlId(shortUrlId) == 0) {
+                return "Error occurred while accessing the database. Please try again.";
+            }
+        }
+        return null;
     }
 }

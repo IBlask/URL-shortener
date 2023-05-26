@@ -232,4 +232,41 @@ public class ShortingServiceTests {
         assertNull(response.getShortUrl());
         assertEquals("Entered URL is not valid!", response.getDescription());
     }
+
+
+
+    @Test
+    public void generateShortUrlId_test_emptyDB() {
+        String response = shortingService.generateShortUrlId(null, urlRepository).getFirst();
+
+        assertEquals("abcde", response);
+    }
+
+    @Test
+    public void generateShortUrlId_test_rowAlreadyInDB() {
+        String response = shortingService.generateShortUrlId("abcde", urlRepository).getFirst();
+
+        assertEquals("abcdf", response);
+    }
+
+    @Test
+    public void generateShortUrlId_test_changingPreviousLetter() {
+        String response = shortingService.generateShortUrlId("abcdz", urlRepository).getFirst();
+
+        assertEquals("abcea", response);
+    }
+
+    @Test
+    public void generateShortUrlId_test_addingNewLetter() {
+        String response = shortingService.generateShortUrlId("zzzzz", urlRepository).getFirst();
+
+        assertEquals("abcdea", response);
+    }
+
+    @Test
+    public void generateShortUrlId_test_DbLimit() {
+        String response = shortingService.generateShortUrlId("zzzzzzzz", urlRepository).getFirst();
+
+        assertEquals("abcde", response);
+    }
 }
