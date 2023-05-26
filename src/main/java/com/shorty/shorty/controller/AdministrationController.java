@@ -10,9 +10,10 @@ import com.shorty.shorty.repository.UserRepository;
 import com.shorty.shorty.service.ShortingService;
 import com.shorty.shorty.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 @RestController
 public class AdministrationController {
@@ -50,7 +51,7 @@ public class AdministrationController {
 
     //TODO CHECK statistics
     @GetMapping("/administration/statistics")
-    public Map<String, Integer> statistics (@RequestHeader(name = "Authorization", required = false) String authToken) {
+    public LinkedHashMap<String, Pair<String, Integer>> statistics (@RequestHeader(name = "Authorization", required = false) String authToken) {
         return shortingService.getStatistics(authToken, userRepository, urlRepository);
     }
 

@@ -1,21 +1,20 @@
 package com.shorty.shorty.service;
 
+import com.shorty.shorty.ShortyApplication;
 import com.shorty.shorty.entity.Url;
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ShortingService {
 
-    public Map<String, Integer> getStatistics(String authToken, UserRepository userRepository, UrlRepository urlRepository) {
+    public LinkedHashMap<String, Pair<String, Integer>> getStatistics(String authToken, UserRepository userRepository, UrlRepository urlRepository) {
         //CHECKING USERNAME AND PASSWORD
         if (authToken == null) {
             return null;
@@ -27,7 +26,7 @@ public class ShortingService {
         final String username = authPair[0];
         final String password = authPair[1];
 
-        if (username.isBlank() && password.isBlank()) {
+        if (username.isBlank() || password.isBlank()) {
             return null;
         }
 
@@ -37,11 +36,13 @@ public class ShortingService {
         }
 
         //GENERATING RESPONSE
-        Map<String, Integer> responseMap = new HashMap<>();
+        LinkedHashMap<String, Pair<String, Integer>> responseMap = new LinkedHashMap<>();
         List<Url> listOfUrls = urlRepository.selectStatistics(user.getUser_id());
 
         for (Url url : listOfUrls) {
-            responseMap.put(url.getFullUrl(), url.getRedirects());
+            String shortUrl = ShortyApplication.getAddress() + url.getShortUrlId();
+            Pair<String, Integer> pair = Pair.of(shortUrl, url.getRedirects());
+            responseMap.put(url.getFullUrl(), pair);
         }
 
         return responseMap;

@@ -1,5 +1,6 @@
 package com.shorty.shorty.service;
 
+import com.shorty.shorty.ShortyApplication;
 import com.shorty.shorty.entity.Url;
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UrlRepository;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.util.Pair;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
@@ -52,12 +54,12 @@ public class ShortingServiceTests {
         listOfUrls.add(url);
         when(urlRepository.selectStatistics(0)).thenReturn(listOfUrls);
 
-        Map<String, Integer> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
+        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
 
-        Map<String, Integer> map = new HashMap<>();
-        map.put("https://www.google.com/", 1);
-        map.put("https://www.google.hr/", 2);
-        map.put("https://www.google.co.uk/", 0);
+        LinkedHashMap<String, Pair<String, Integer>> map = new LinkedHashMap<>();
+        map.put("https://www.google.com/", Pair.of(ShortyApplication.getAddress() + "abcde", 1));
+        map.put("https://www.google.hr/", Pair.of(ShortyApplication.getAddress() + "abcdf", 2));
+        map.put("https://www.google.co.uk/", Pair.of(ShortyApplication.getAddress() + "abcdg", 0));
 
         assertEquals(map, response);
     }
@@ -74,9 +76,9 @@ public class ShortingServiceTests {
         List<Url> listOfUrls = new ArrayList<>();
         when(urlRepository.selectStatistics(0)).thenReturn(listOfUrls);
 
-        Map<String, Integer> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
+        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
 
-        Map<String, Integer> emptyMap = new HashMap<>();
+        LinkedHashMap<String, Pair<String, Integer>> emptyMap = new LinkedHashMap<>();
 
         assertEquals(emptyMap, response);
     }
@@ -88,7 +90,7 @@ public class ShortingServiceTests {
         List<Url> listOfUrls = new ArrayList<>();
         when(urlRepository.selectStatistics(0)).thenReturn(listOfUrls);
 
-        Map<String, Integer> response = shortingService.getStatistics(null, userRepository, urlRepository);
+        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(null, userRepository, urlRepository);
 
         assertNull(response);
     }
@@ -105,7 +107,7 @@ public class ShortingServiceTests {
         List<Url> listOfUrls = new ArrayList<>();
         when(urlRepository.selectStatistics(0)).thenReturn(listOfUrls);
 
-        Map<String, Integer> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
+        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
 
         assertNull(response);
     }
@@ -122,7 +124,7 @@ public class ShortingServiceTests {
         List<Url> listOfUrls = new ArrayList<>();
         when(urlRepository.selectStatistics(0)).thenReturn(listOfUrls);
 
-        Map<String, Integer> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
+        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
 
         assertNull(response);
     }
@@ -136,7 +138,7 @@ public class ShortingServiceTests {
         List<Url> listOfUrls = new ArrayList<>();
         when(urlRepository.selectStatistics(0)).thenReturn(listOfUrls);
 
-        Map<String, Integer> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
+        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
 
         assertNull(response);
     }
