@@ -6,6 +6,7 @@ import com.shorty.shorty.entity.Url;
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -15,13 +16,35 @@ import java.util.Base64;
 public class ShortingService {
 
     public ResponseShort shorting(RequestShort requestShort, UrlRepository urlRepository, String authToken, UserRepository userRepository) {
-        String errorMessage;
         ResponseShort responseShort = new ResponseShort();
 
-        //CHECKING USERNAME AND PASSWORD
-        if (authToken == null) {
-            responseShort.setDescription("Access denied! Please log in.");
+        //CHECK AUTHORIZATION TOKEN
+        Pair<String, User> returnPair = checkAuthToken(authToken, userRepository);
+        String errorMessage = returnPair.getFirst();
+        User user = returnPair.getSecond();
+
+        if (!errorMessage.isEmpty()) {
+            responseShort.setDescription(errorMessage);
             return responseShort;
+        }
+
+        //CHECK IF THE REQUEST IS VALID
+        errorMessage = findRequestError(requestShort);
+        if (errorMessage != null) {
+            responseShort.setDescription(errorMessage);
+            return responseShort;
+        }
+
+        //GENERATE SHORT URL
+        return generateShortUrl(requestShort, responseShort, user, urlRepository);
+    }
+
+
+    private Pair<String, User> checkAuthToken(String authToken, UserRepository userRepository) {
+        User user = new User();
+
+        if (authToken == null) {
+            return Pair.of("Access denied! Please log in.", user);
         }
 
         String basicToken = authToken.substring(5).trim();
@@ -31,54 +54,58 @@ public class ShortingService {
         final String password = authPair[1];
 
         if (username.isBlank() && password.isBlank()) {
-            responseShort.setDescription("Please enter your username and password.");
-            return responseShort;
+            return Pair.of("Please enter your username and password.", user);
         }
-        else if (username.isBlank()) {
-            responseShort.setDescription("Please enter your username.");
-            return responseShort;
+        if (username.isBlank()) {
+            return Pair.of("Please enter your username.", user);
         }
-        else if (password.isBlank()) {
-            responseShort.setDescription("Please enter your password.");
-            return responseShort;
+        if (password.isBlank()) {
+            return Pair.of("Please enter your password.", user);
         }
 
-        User user = userRepository.findByUsername(username);
+        user = userRepository.findByUsername(username);
         if (user == null || !user.getPassword().equals(password)) {
-            responseShort.setDescription("Access denied! Wrong username and/or password.");
-            return responseShort;
+            user = new User();
+            return Pair.of("Access denied! Wrong username and/or password.", user);
         }
 
-        //SHORTING
+        return Pair.of("", user);
+    }
+
+    private String findRequestError(RequestShort requestShort) {
+        String errorMessage;
+
         //is request empty
         if (requestShort.isEmpty()) {
-            return responseShort;
+            return "Error occurred! Please try again.";
         }
         //is url sent
         if (requestShort.urlIsBlank()) {
-            responseShort.setDescription("Please enter your URL!");
+            return "Please enter your URL!";
         }
         //checking if entered URL is valid
         else if ((errorMessage = requestShort.EnteredUrlIsNotValid()) != null) {
-            responseShort.setDescription(errorMessage);
+            return errorMessage;
         }
-        //generating short URL
-        else {
-            Url lastUrl = urlRepository.findFirstByOrderByUrlIdDesc();
-            String lastShortUrlId = null;
-            if (lastUrl != null) {
-                lastShortUrlId = lastUrl.getShortUrlId();
-            }
-            String shortUrlId = responseShort.generateShortUrlId(lastShortUrlId, urlRepository);
-            if (shortUrlId != null) {
-                Url url = new Url(requestShort.getUrl(), shortUrlId, requestShort.getRedirectType(), user.getUser_id());
-                urlRepository.save(url);
-                responseShort.setShortUrl(url.getShortUrlId());
-                responseShort.setDescription(null);
-            }
+
+        return null;
+    }
+
+    private ResponseShort generateShortUrl(RequestShort requestShort, ResponseShort responseShort, User user, UrlRepository urlRepository) {
+        Url lastUrl = urlRepository.findFirstByOrderByUrlIdDesc();
+        String lastShortUrlId = null;
+        if (lastUrl != null) {
+            lastShortUrlId = lastUrl.getShortUrlId();
+        }
+
+        String shortUrlId = responseShort.generateShortUrlId(lastShortUrlId, urlRepository);
+        if (shortUrlId != null) {
+            Url url = new Url(requestShort.getUrl(), shortUrlId, requestShort.getRedirectType(), user.getUser_id());
+            urlRepository.save(url);
+            responseShort.setShortUrl(url.getShortUrlId());
+            responseShort.setDescription(null);
         }
 
         return responseShort;
     }
-
 }
