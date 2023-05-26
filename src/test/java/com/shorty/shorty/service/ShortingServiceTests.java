@@ -242,13 +242,13 @@ public class ShortingServiceTests {
         when(request.isEmpty()).thenReturn(false);
         when(request.urlIsBlank()).thenReturn(false);
 
-        Url url = new Url(request.getUrl(), "abcdz", 0);
-        when(urlRepository.findByFullUrl(request.getUrl())).thenReturn(url);
-
         User user = new User();
         user.setUsername("user");
         user.setPassword("pass");
         when(userRepository.findByUsername("user")).thenReturn(user);
+
+        Url url = new Url(request.getUrl(), "abcdz", 0);
+        when(urlRepository.findByFullUrlAndUserId(request.getUrl(), user.getUser_id())).thenReturn(url);
 
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
         authToken = "Basic" + authToken;

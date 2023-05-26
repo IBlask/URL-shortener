@@ -36,7 +36,7 @@ public class ShortingService {
         }
 
         //CHECK IF ENTERED URL IS ALREADY SHORTENED
-        Url url = urlRepository.findByFullUrl(requestShort.getUrl());
+        Url url = urlRepository.findByFullUrlAndUserId(requestShort.getUrl(), user.getUser_id());
         if (url != null) {
             responseShort.setShortUrl(url.getShortUrlId());
             responseShort.setDescription(null);

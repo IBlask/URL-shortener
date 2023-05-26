@@ -12,7 +12,7 @@ public interface UrlRepository extends JpaRepository <Url, Integer> {
 
     Url findByShortUrlId(String shortUrlId);
 
-    Url findByFullUrl(String fullUrl);
+    Url findByFullUrlAndUserId(String fullUrl, int userId);
 
     @Transactional
     int deleteByShortUrlId(String shortUrlId);
