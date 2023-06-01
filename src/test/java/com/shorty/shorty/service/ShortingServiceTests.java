@@ -262,36 +262,36 @@ public class ShortingServiceTests {
 
 
     @Test
-    public void generateShortUrlId_test_emptyDB() {
-        String response = shortingService.generateShortUrlId(null, urlRepository).getFirst();
+    public void generateShortUrl_test_emptyDB() {
+        String response = shortingService.generateShortUrl(null, urlRepository).getFirst();
 
         assertEquals("abcde", response);
     }
 
     @Test
-    public void generateShortUrlId_test_rowAlreadyInDB() {
-        String response = shortingService.generateShortUrlId("abcde", urlRepository).getFirst();
+    public void generateShortUrl_test_rowAlreadyInDB() {
+        String response = shortingService.generateShortUrl("abcde", urlRepository).getFirst();
 
         assertEquals("abcdf", response);
     }
 
     @Test
-    public void generateShortUrlId_test_changingPreviousLetter() {
-        String response = shortingService.generateShortUrlId("abcdz", urlRepository).getFirst();
+    public void generateShortUrl_test_changingPreviousLetter() {
+        String response = shortingService.generateShortUrl("abcdz", urlRepository).getFirst();
 
         assertEquals("abcea", response);
     }
 
     @Test
-    public void generateShortUrlId_test_addingNewLetter() {
-        String response = shortingService.generateShortUrlId("zzzzz", urlRepository).getFirst();
+    public void generateShortUrl_test_addingNewLetter() {
+        String response = shortingService.generateShortUrl("zzzzz", urlRepository).getFirst();
 
         assertEquals("abcdea", response);
     }
 
     @Test
-    public void generateShortUrlId_test_DbLimit() {
-        String response = shortingService.generateShortUrlId("zzzzzzzz", urlRepository).getFirst();
+    public void generateShortUrl_test_DbLimit() {
+        String response = shortingService.generateShortUrl("zzzzzzzz", urlRepository).getFirst();
 
         assertEquals("abcde", response);
     }

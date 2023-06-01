@@ -10,10 +10,10 @@ public interface UrlRepository extends JpaRepository <Url, Integer> {
 
     Url findFirstByOrderByUrlIdDesc();
 
-    Url findByShortUrlId(String shortUrlId);
+    Url findByShortUrl(String shortUrl);
 
     Url findByFullUrlAndUserId(String fullUrl, int userId);
 
     @Transactional
-    int deleteByShortUrlId(String shortUrlId);
+    int deleteByShortUrl(String shortUrl);
 }
