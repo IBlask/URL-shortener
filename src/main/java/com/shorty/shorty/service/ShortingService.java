@@ -37,7 +37,7 @@ public class ShortingService {
 
         //GENERATING RESPONSE
         LinkedHashMap<String, Pair<String, Integer>> responseMap = new LinkedHashMap<>();
-        List<Url> listOfUrls = urlRepository.selectStatistics(user.getUser_id());
+        List<Url> listOfUrls = urlRepository.findAllByUserId(user.getUser_id());
 
         for (Url url : listOfUrls) {
             String shortUrl = ShortyApplication.getAddress() + url.getShortUrlId();
