@@ -51,7 +51,7 @@ public class ShortingServiceTests {
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
         authToken = "Basic" + authToken;
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
 
         String shortUrl = response.getShortUrl();
         String shortUrlId = shortUrl.substring(shortUrl.length() - 5);
@@ -78,7 +78,7 @@ public class ShortingServiceTests {
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
         authToken = "Basic" + authToken;
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
 
         assertEquals("Error occurred! Please try again.", response.getDescription());
         assertNull(response.getShortUrl());
@@ -99,7 +99,7 @@ public class ShortingServiceTests {
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
         authToken = "Basic" + authToken;
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
 
         assertEquals("Please enter your URL!", response.getDescription());
         assertNull(response.getShortUrl());
@@ -112,7 +112,7 @@ public class ShortingServiceTests {
         when(request.isEmpty()).thenReturn(false);
         when(request.urlIsBlank()).thenReturn(false);
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, null, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, null, userRepository);
 
         assertEquals("Access denied! Please log in.", response.getDescription());
         assertNull(response.getShortUrl());
@@ -130,7 +130,7 @@ public class ShortingServiceTests {
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
         authToken = "Basic" + authToken;
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
 
         assertEquals("Access denied! Wrong username and/or password.", response.getDescription());
         assertNull(response.getShortUrl());
@@ -148,7 +148,7 @@ public class ShortingServiceTests {
         String authToken = Base64.getEncoder().encodeToString((":").getBytes());
         authToken = "Basic" + authToken;
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
 
         assertEquals("Please enter your username and password.", response.getDescription());
         assertNull(response.getShortUrl());
@@ -166,7 +166,7 @@ public class ShortingServiceTests {
         String authToken = Base64.getEncoder().encodeToString((":pass").getBytes());
         authToken = "Basic" + authToken;
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
 
         assertEquals("Please enter your username.", response.getDescription());
         assertNull(response.getShortUrl());
@@ -184,7 +184,7 @@ public class ShortingServiceTests {
         String authToken = Base64.getEncoder().encodeToString(("user:").getBytes());
         authToken = "Basic" + authToken;
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
 
         assertEquals("Please enter your password.", response.getDescription());
         assertNull(response.getShortUrl());
@@ -206,7 +206,7 @@ public class ShortingServiceTests {
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
         authToken = "Basic" + authToken;
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
 
         assertNull(response.getShortUrl());
         assertEquals("Entered URL is not valid! Please use 'http://' or 'https://'", response.getDescription());
@@ -228,7 +228,7 @@ public class ShortingServiceTests {
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
         authToken = "Basic" + authToken;
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
 
         assertNull(response.getShortUrl());
         assertEquals("Entered URL is not valid!", response.getDescription());
@@ -253,7 +253,7 @@ public class ShortingServiceTests {
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
         authToken = "Basic" + authToken;
 
-        ResponseShort response = shortingService.shorting(request, urlRepository, authToken, userRepository);
+        ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
 
         assertNull(response.getDescription());
         assertEquals("abcdz", response.getShortUrl().substring(response.getShortUrl().length()-5));

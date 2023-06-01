@@ -43,7 +43,7 @@ public class AdministrationController {
     //TODO CHECK short
     @PostMapping(value = "/administration/short", consumes = "application/json", produces = "application/json")
     public ResponseShort shorting (@RequestHeader(name = "Authorization", required = false) String authToken, @RequestBody RequestShort requestShort) {
-        return shortingService.shorting(requestShort, urlRepository, authToken, userRepository);
+        return shortingService.shortenUrl(requestShort, urlRepository, authToken, userRepository);
     }
 
 

@@ -136,7 +136,7 @@ public class AdministrationControllerUnitTests {
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
 
         ShortingService shortingService = mock(ShortingService.class);
-        when(shortingService.shorting(requestShort, urlRepository, authToken, userRepository)).thenReturn(response);
+        when(shortingService.shortenUrl(requestShort, urlRepository, authToken, userRepository)).thenReturn(response);
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
@@ -158,7 +158,7 @@ public class AdministrationControllerUnitTests {
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
 
         ShortingService shortingService = mock(ShortingService.class);
-        when(shortingService.shorting(requestShort, urlRepository, authToken, userRepository)).thenReturn(response);
+        when(shortingService.shortenUrl(requestShort, urlRepository, authToken, userRepository)).thenReturn(response);
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 

@@ -15,7 +15,7 @@ import java.util.Base64;
 @Service
 public class ShortingService {
 
-    public ResponseShort shorting(RequestShort requestShort, UrlRepository urlRepository, String authToken, UserRepository userRepository) {
+    public ResponseShort shortenUrl(RequestShort requestShort, UrlRepository urlRepository, String authToken, UserRepository userRepository) {
         ResponseShort responseShort = new ResponseShort();
 
         //CHECK AUTHORIZATION TOKEN
