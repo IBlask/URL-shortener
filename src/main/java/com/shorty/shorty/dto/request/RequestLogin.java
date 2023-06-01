@@ -2,6 +2,7 @@ package com.shorty.shorty.dto.request;
 
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class RequestLogin {
     private String accountID;
@@ -47,10 +48,8 @@ public class RequestLogin {
     public boolean accountIdAndPasswordAreMatching(UserRepository userRepository) {
         User user = userRepository.findByUsername(this.accountID);
 
-        if ((user != null) && user.getPassword().equals(this.password)) {
-            return true;
-        }
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-        return false;
+        return (user != null) && bCryptPasswordEncoder.matches(this.password, user.getPassword());
     }
 }
