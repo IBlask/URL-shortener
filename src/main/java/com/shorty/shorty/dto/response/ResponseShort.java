@@ -1,10 +1,16 @@
 package com.shorty.shorty.dto.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.shorty.shorty.ShortyApplication;
+import com.shorty.shorty.ApplicationProperties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ResponseShort {
+    @Value("${server.domain}")
+    String serverDomain;
+
     private String shortUrl;
     private String description = "Error occurred! Please try again.";
 
@@ -13,7 +19,7 @@ public class ResponseShort {
     }
 
     public void setShortUrl(String shortUrlId) {
-        this.shortUrl = ShortyApplication.getAddress() + shortUrlId;
+        this.shortUrl = ApplicationProperties.getServerDomain() + shortUrlId;
     }
 
     public String getDescription() {

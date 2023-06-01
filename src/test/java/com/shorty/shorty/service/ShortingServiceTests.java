@@ -1,6 +1,6 @@
 package com.shorty.shorty.service;
 
-import com.shorty.shorty.ShortyApplication;
+import com.shorty.shorty.ApplicationProperties;
 import com.shorty.shorty.dto.request.RequestShort;
 import com.shorty.shorty.dto.response.ResponseShort;
 import com.shorty.shorty.entity.Url;
@@ -59,7 +59,7 @@ public class ShortingServiceTests {
         Matcher m = p.matcher(shortUrlId);
         boolean b = m.matches();
 
-        assertTrue(response.getShortUrl().contains(ShortyApplication.getAddress()));
+        assertTrue(response.getShortUrl().contains(ApplicationProperties.getServerDomain()));
         assertTrue(b);
         assertNull(response.getDescription());
     }
@@ -236,7 +236,7 @@ public class ShortingServiceTests {
 
     @Test
     public void short_test_EnteredUrlIsAlreadyInDB() {
-        System.out.println(ShortyApplication.getAddress());
+        System.out.println(ApplicationProperties.getServerDomain());
         RequestShort request = mock(RequestShort.class);
         request.setUrl("http://www.google.com/");
         when(request.isEmpty()).thenReturn(false);

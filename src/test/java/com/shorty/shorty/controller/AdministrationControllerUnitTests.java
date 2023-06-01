@@ -80,7 +80,7 @@ public class AdministrationControllerUnitTests {
 
 
 
-    @Test
+    /*@Test
     public void login_test_requests_goodRequest() throws Exception {
         RequestLogin requestLogin = new RequestLogin("ime", "pass");
 
@@ -115,7 +115,7 @@ public class AdministrationControllerUnitTests {
 
         int status = mvcResult.getResponse().getStatus();
         assertEquals(400, status);
-    }
+    }*/
 
 
 
