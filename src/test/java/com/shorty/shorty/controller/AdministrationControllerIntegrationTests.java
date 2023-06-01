@@ -137,7 +137,7 @@ public class AdministrationControllerIntegrationTests {
 
 
 
-    /*@Test
+    @Test
     public void login_test_registeredUser() throws Exception {
         //adding new user to database
         TestRestTemplate restTemplate_reg = new TestRestTemplate();
@@ -249,7 +249,7 @@ public class AdministrationControllerIntegrationTests {
 
         assertEquals(200, result.getStatusCodeValue());
         assertFalse(response.isSuccess());
-    }*/
+    }
 
 
 

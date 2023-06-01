@@ -45,7 +45,7 @@ public class ShortingServiceTests {
 
         User user = new User();
         user.setUsername("user");
-        user.setPassword("pass");
+        user.encodeAndSetPassword("pass");
         when(userRepository.findByUsername("user")).thenReturn(user);
 
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
@@ -72,7 +72,7 @@ public class ShortingServiceTests {
 
         User user = new User();
         user.setUsername("user");
-        user.setPassword("pass");
+        user.encodeAndSetPassword("pass");
         when(userRepository.findByUsername("user")).thenReturn(user);
 
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
@@ -93,7 +93,7 @@ public class ShortingServiceTests {
 
         User user = new User();
         user.setUsername("user");
-        user.setPassword("pass");
+        user.encodeAndSetPassword("pass");
         when(userRepository.findByUsername("user")).thenReturn(user);
 
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
@@ -200,7 +200,7 @@ public class ShortingServiceTests {
 
         User user = new User();
         user.setUsername("user");
-        user.setPassword("pass");
+        user.encodeAndSetPassword("pass");
         when(userRepository.findByUsername("user")).thenReturn(user);
 
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
@@ -222,7 +222,7 @@ public class ShortingServiceTests {
 
         User user = new User();
         user.setUsername("user");
-        user.setPassword("pass");
+        user.encodeAndSetPassword("pass");
         when(userRepository.findByUsername("user")).thenReturn(user);
 
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
@@ -244,7 +244,7 @@ public class ShortingServiceTests {
 
         User user = new User();
         user.setUsername("user");
-        user.setPassword("pass");
+        user.encodeAndSetPassword("pass");
         when(userRepository.findByUsername("user")).thenReturn(user);
 
         Url url = new Url(request.getUrl(), "abcdz", 0);

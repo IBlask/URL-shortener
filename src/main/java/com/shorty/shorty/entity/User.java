@@ -1,6 +1,9 @@
 package com.shorty.shorty.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.security.SecureRandom;
 
 @Entity
 @Table(name = "USERS")
@@ -17,7 +20,7 @@ public class User {
 
     public User(String username, String password) {
         this.username = username;
-        this.password = password;
+        encodeAndSetPassword(password);
     }
 
     public int getUser_id() {
@@ -38,5 +41,10 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void encodeAndSetPassword(String password) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(10, new SecureRandom());
+        this.password = bCryptPasswordEncoder.encode(password);
     }
 }

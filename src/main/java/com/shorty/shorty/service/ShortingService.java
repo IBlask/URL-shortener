@@ -7,6 +7,7 @@ import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
 import org.springframework.data.util.Pair;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -73,7 +74,8 @@ public class ShortingService {
         }
 
         user = userRepository.findByUsername(username);
-        if (user == null || !user.getPassword().equals(password)) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        if (user == null || !bCryptPasswordEncoder.matches(password, user.getPassword())) {
             user = new User();
             return Pair.of("Access denied! Wrong username and/or password.", user);
         }
@@ -82,8 +84,6 @@ public class ShortingService {
     }
 
     private String findRequestError(RequestShort requestShort) {
-        String errorMessage;
-
         //is request empty
         if (requestShort.isEmpty()) {
             return "Error occurred! Please try again.";
@@ -93,11 +93,7 @@ public class ShortingService {
             return "Please enter your URL!";
         }
         //checking if entered URL is valid
-        else if ((errorMessage = requestShort.EnteredUrlIsNotValid()) != null) {
-            return errorMessage;
-        }
-
-        return null;
+        return requestShort.EnteredUrlIsNotValid();
     }
 
     private ResponseShort generateShortUrl(RequestShort requestShort, ResponseShort responseShort, User user, UrlRepository urlRepository) {
