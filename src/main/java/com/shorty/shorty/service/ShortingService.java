@@ -1,23 +1,22 @@
 package com.shorty.shorty.service;
 
-import com.shorty.shorty.ApplicationProperties;
+import com.shorty.shorty.dto.response.ResponseStatistics;
 import com.shorty.shorty.entity.Url;
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
-import org.springframework.data.util.Pair;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
 public class ShortingService {
 
-    public LinkedHashMap<String, Pair<String, Integer>> getStatistics(String authToken, UserRepository userRepository, UrlRepository urlRepository) {
+    public List<ResponseStatistics> getStatistics(String authToken, UserRepository userRepository, UrlRepository urlRepository) {
         //CHECKING USERNAME AND PASSWORD
         if (authToken == null) {
             return null;
@@ -40,16 +39,15 @@ public class ShortingService {
         }
 
         //GENERATING RESPONSE
-        LinkedHashMap<String, Pair<String, Integer>> responseMap = new LinkedHashMap<>();
+        List<ResponseStatistics> returnList = new ArrayList<>();
         List<Url> listOfUrls = urlRepository.findAllByUserId(user.getUser_id());
 
         for (Url url : listOfUrls) {
-            String shortUrl = ApplicationProperties.getServerDomain() + url.getShortUrlId();
-            Pair<String, Integer> pair = Pair.of(shortUrl, url.getRedirects());
-            responseMap.put(url.getFullUrl(), pair);
+            ResponseStatistics responseStatistics = new ResponseStatistics(url.getFullUrl(), url.getShortUrl(), url.getRedirects());
+            returnList.add(responseStatistics);
         }
 
-        return responseMap;
+        return returnList;
     }
 
 }

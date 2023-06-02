@@ -11,8 +11,8 @@ public class Url {
     private int url_id;
     @Column(name = "full_url")
     private String fullUrl;
-    @Column(name = "short_url_id")
-    private String shortUrlId;
+    @Column(name = "short_url")
+    private String shortUrl;
     @Column(name = "redirects")
     private int redirects = 0;
     @Column(name = "redirect_type")
@@ -24,9 +24,9 @@ public class Url {
         super();
     }
 
-    public Url(String fullUrl, String shortUrlId, int redirectType, int userId) {
+    public Url(String fullUrl, String shortUrl, int redirectType, int userId) {
         this.fullUrl = fullUrl;
-        this.shortUrlId = shortUrlId;
+        this.shortUrl = shortUrl;
         this.setRedirectType(redirectType);
         this.userId = userId;
     }
@@ -43,12 +43,12 @@ public class Url {
         this.fullUrl = fullUrl;
     }
 
-    public String getShortUrlId() {
-        return shortUrlId;
+    public String getShortUrl() {
+        return shortUrl;
     }
 
-    public void setShortUrlId(String shortUrlId) {
-        this.shortUrlId = shortUrlId;
+    public void setShortUrlId(String shortUrl) {
+        this.shortUrl = shortUrl;
     }
 
     public int getRedirects() {

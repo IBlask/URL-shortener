@@ -5,15 +5,15 @@ import com.shorty.shorty.dto.request.RequestRegister;
 import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.dto.response.ResponseShort;
+import com.shorty.shorty.dto.response.ResponseStatistics;
 import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
 import com.shorty.shorty.service.ShortingService;
 import com.shorty.shorty.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
+import java.util.List;
 
 @RestController
 public class AdministrationController {
@@ -51,7 +51,7 @@ public class AdministrationController {
 
     //TODO CHECK statistics
     @GetMapping("/administration/statistics")
-    public LinkedHashMap<String, Pair<String, Integer>> statistics (@RequestHeader(name = "Authorization", required = false) String authToken) {
+    public List<ResponseStatistics> statistics (@RequestHeader(name = "Authorization", required = false) String authToken) {
         return shortingService.getStatistics(authToken, userRepository, urlRepository);
     }
 

@@ -1,6 +1,6 @@
 package com.shorty.shorty.service;
 
-import com.shorty.shorty.ApplicationProperties;
+import com.shorty.shorty.dto.response.ResponseStatistics;
 import com.shorty.shorty.entity.Url;
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UrlRepository;
@@ -12,16 +12,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.util.Pair;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.LinkedHashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -41,37 +40,40 @@ public class ShortingServiceTests {
     public void statistics_test_goodRequest() {
         User user = new User();
         user.setUsername("user");
-        user.setPassword("pass");
+        user.setPassword(new BCryptPasswordEncoder(10, new SecureRandom()).encode("pass"));
         when(userRepository.findByUsername("user")).thenReturn(user);
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
         authToken = "Basic" + authToken;
 
         List<Url> listOfUrls = new ArrayList<>();
+        List<ResponseStatistics> assertedResponse = new ArrayList<>();
         Url url = new Url("https://www.google.com/", "abcde", 0);
         url.incrementRedirects();
         listOfUrls.add(url);
+        assertedResponse.add(new ResponseStatistics(url.getFullUrl(), url.getShortUrl(), url.getRedirects()));
         url = new Url("https://www.google.hr/", "abcdf", 0);
         listOfUrls.add(url);
         url.incrementRedirects(); url.incrementRedirects();
+        assertedResponse.add(new ResponseStatistics(url.getFullUrl(), url.getShortUrl(), url.getRedirects()));
         url = new Url("https://www.google.co.uk/", "abcdg", 0);
         listOfUrls.add(url);
+        assertedResponse.add(new ResponseStatistics(url.getFullUrl(), url.getShortUrl(), url.getRedirects()));
         when(urlRepository.findAllByUserId(0)).thenReturn(listOfUrls);
 
-        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
+        List<ResponseStatistics> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
 
-        LinkedHashMap<String, Pair<String, Integer>> map = new LinkedHashMap<>();
-        map.put("https://www.google.com/", Pair.of(ApplicationProperties.getServerDomain() + "abcde", 1));
-        map.put("https://www.google.hr/", Pair.of(ApplicationProperties.getServerDomain() + "abcdf", 2));
-        map.put("https://www.google.co.uk/", Pair.of(ApplicationProperties.getServerDomain() + "abcdg", 0));
-
-        assertEquals(map, response);
+        for (int i = 0; i < 3; i++) {
+            assertEquals(assertedResponse.get(i).getFullUrl(), response.get(i).getFullUrl());
+            assertEquals(assertedResponse.get(i).getShortUrl(), response.get(i).getShortUrl());
+            assertEquals(assertedResponse.get(i).getRedirects(), response.get(i).getRedirects());
+        }
     }
 
     @Test
     public void statistics_test_emptyDB() {
         User user = new User();
         user.setUsername("user");
-        user.setPassword("pass");
+        user.setPassword(new BCryptPasswordEncoder(10, new SecureRandom()).encode("pass"));
         when(userRepository.findByUsername("user")).thenReturn(user);
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
         authToken = "Basic" + authToken;
@@ -79,11 +81,11 @@ public class ShortingServiceTests {
         List<Url> listOfUrls = new ArrayList<>();
         when(urlRepository.findAllByUserId(0)).thenReturn(listOfUrls);
 
-        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
+        List<ResponseStatistics> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
 
-        LinkedHashMap<String, Pair<String, Integer>> emptyMap = new LinkedHashMap<>();
+        List<ResponseStatistics> emptyList = new ArrayList<>();
 
-        assertEquals(emptyMap, response);
+        assertEquals(emptyList, response);
     }
 
     @Test
@@ -93,7 +95,7 @@ public class ShortingServiceTests {
         List<Url> listOfUrls = new ArrayList<>();
         when(urlRepository.findAllByUserId(0)).thenReturn(listOfUrls);
 
-        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(null, userRepository, urlRepository);
+        List<ResponseStatistics> response = shortingService.getStatistics(null, userRepository, urlRepository);
 
         assertNull(response);
     }
@@ -110,7 +112,7 @@ public class ShortingServiceTests {
         List<Url> listOfUrls = new ArrayList<>();
         when(urlRepository.findAllByUserId(0)).thenReturn(listOfUrls);
 
-        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
+        List<ResponseStatistics> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
 
         assertNull(response);
     }
@@ -127,7 +129,7 @@ public class ShortingServiceTests {
         List<Url> listOfUrls = new ArrayList<>();
         when(urlRepository.findAllByUserId(0)).thenReturn(listOfUrls);
 
-        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
+        List<ResponseStatistics> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
 
         assertNull(response);
     }
@@ -141,7 +143,7 @@ public class ShortingServiceTests {
         List<Url> listOfUrls = new ArrayList<>();
         when(urlRepository.findAllByUserId(0)).thenReturn(listOfUrls);
 
-        LinkedHashMap<String, Pair<String, Integer>> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
+        List<ResponseStatistics> response = shortingService.getStatistics(authToken, userRepository, urlRepository);
 
         assertNull(response);
     }
