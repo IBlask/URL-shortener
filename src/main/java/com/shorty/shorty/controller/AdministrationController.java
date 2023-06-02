@@ -6,13 +6,14 @@ import com.shorty.shorty.dto.response.ResponseLogin;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.dto.response.ResponseShort;
 import com.shorty.shorty.dto.response.ResponseStatistics;
+import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
+import com.shorty.shorty.service.ShortingService;
 import com.shorty.shorty.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class AdministrationController {
@@ -34,6 +35,11 @@ public class AdministrationController {
 
 
 
+    @Autowired
+    ShortingService shortingService;
+    @Autowired
+    UrlRepository urlRepository;
+
     //TODO short
     @GetMapping("/administration/short")
     public ResponseShort shortIt () {
@@ -43,11 +49,10 @@ public class AdministrationController {
 
 
 
-    //TODO statistics
+    //TODO CHECK statistics
     @GetMapping("/administration/statistics")
-    public ResponseStatistics statistics () {
-
-        return null;
+    public List<ResponseStatistics> statistics (@RequestHeader(name = "Authorization", required = false) String authToken) {
+        return shortingService.getStatistics(authToken, userRepository, urlRepository);
     }
 
 }
