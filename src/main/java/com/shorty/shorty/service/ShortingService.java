@@ -1,15 +1,18 @@
 package com.shorty.shorty.service;
 
-import com.shorty.shorty.ShortyApplication;
+import com.shorty.shorty.ApplicationProperties;
 import com.shorty.shorty.entity.Url;
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
 import org.springframework.data.util.Pair;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Service
 public class ShortingService {
@@ -31,7 +34,8 @@ public class ShortingService {
         }
 
         User user = userRepository.findByUsername(username);
-        if (user == null || !user.getPassword().equals(password)) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        if (user == null || !bCryptPasswordEncoder.matches(password, user.getPassword())) {
             return null;
         }
 
@@ -40,7 +44,7 @@ public class ShortingService {
         List<Url> listOfUrls = urlRepository.findAllByUserId(user.getUser_id());
 
         for (Url url : listOfUrls) {
-            String shortUrl = ShortyApplication.getAddress() + url.getShortUrlId();
+            String shortUrl = ApplicationProperties.getServerDomain() + url.getShortUrlId();
             Pair<String, Integer> pair = Pair.of(shortUrl, url.getRedirects());
             responseMap.put(url.getFullUrl(), pair);
         }

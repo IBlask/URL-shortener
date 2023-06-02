@@ -2,31 +2,11 @@ package com.shorty.shorty;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-@SpringBootApplication
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 public class ShortyApplication {
-	private static String address = "http://";
 
-	public static String getAddress() {
-		return address;
-	}
-
-	static void setAddress() {
-		try {
-			address += InetAddress.getLocalHost().getHostName() + "/";
-		} catch (UnknownHostException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-
-	public static void main(String[] args) {
-		SpringApplication.run(ShortyApplication.class, args);
-
-		setAddress();
-	}
+	public static void main(String[] args) { SpringApplication.run(ShortyApplication.class, args); }
 
 }
