@@ -361,7 +361,12 @@ public class AdministrationControllerIntegrationTests {
         assertedResponse.add(new ResponseStatistics("https://www.google.hr/", "abcdf", 0));
 
         assertEquals(200, result.getStatusCodeValue());
-        assertEquals(assertedResponse, response);
+        for (int i = 0; i < 2; i++) {
+            assert response != null;
+            assertEquals(assertedResponse.get(i).getFullUrl(), response.get(i).getFullUrl());
+            assertEquals(assertedResponse.get(i).getShortUrl(), response.get(i).getShortUrl());
+            assertEquals(assertedResponse.get(i).getRedirects(), response.get(i).getRedirects());
+        }
     }
 
     @Test
