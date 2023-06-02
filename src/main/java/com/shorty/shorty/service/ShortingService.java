@@ -7,6 +7,7 @@ import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
 import org.springframework.data.util.Pair;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +20,11 @@ public class ShortingService {
     public ResponseShort shortenUrl(RequestShort requestShort, UrlRepository urlRepository, String authToken, UserRepository userRepository) {
         ResponseShort responseShort = new ResponseShort();
 
-        //CHECK AUTHORIZATION TOKEN
-        Pair<String, User> returnPair = checkAuthToken(authToken, userRepository);
-        String errorMessage = returnPair.getFirst();
-        User user = returnPair.getSecond();
-
-        if (!errorMessage.isEmpty()) {
-            responseShort.setDescription(errorMessage);
-            return responseShort;
-        }
+        //CHECK AUTHORIZATION TOKEN (return User if token is valid)
+        User user = checkAuthToken(authToken, userRepository);
 
         //CHECK IF THE REQUEST IS VALID
-        errorMessage = findRequestError(requestShort);
+        String errorMessage = findRequestError(requestShort);
         if (errorMessage != null) {
             responseShort.setDescription(errorMessage);
             return responseShort;
@@ -50,11 +44,9 @@ public class ShortingService {
 
 
 
-    private Pair<String, User> checkAuthToken(String authToken, UserRepository userRepository) {
-        User user = new User();
-
+    private User checkAuthToken(String authToken, UserRepository userRepository) throws AccessDeniedException {
         if (authToken == null) {
-            return Pair.of("Access denied! Please log in.", user);
+            throw new AccessDeniedException("Access denied! Please log in.");
         }
 
         String basicToken = authToken.substring(5).trim();
@@ -64,23 +56,22 @@ public class ShortingService {
         final String password = authPair[1];
 
         if (username.isBlank() && password.isBlank()) {
-            return Pair.of("Please enter your username and password.", user);
+            throw new AccessDeniedException("Please enter your username and password.");
         }
         if (username.isBlank()) {
-            return Pair.of("Please enter your username.", user);
+            throw new AccessDeniedException("Please enter your username.");
         }
         if (password.isBlank()) {
-            return Pair.of("Please enter your password.", user);
+            throw new AccessDeniedException("Please enter your password.");
         }
 
-        user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         if (user == null || !bCryptPasswordEncoder.matches(password, user.getPassword())) {
-            user = new User();
-            return Pair.of("Access denied! Wrong username and/or password.", user);
+            throw new AccessDeniedException("Access denied! Wrong username and/or password.");
         }
 
-        return Pair.of("", user);
+        return user;
     }
 
     private String findRequestError(RequestShort requestShort) {
@@ -104,7 +95,7 @@ public class ShortingService {
         }
 
         //Pair<newShortUrl, errorMessage>
-        Pair<String, String> returnPair = generateShortUrl(lastShortUrl, urlRepository);
+        Pair<String, String> returnPair = generateNewShortUrl(lastShortUrl, urlRepository);
         String shortUrl = returnPair.getFirst();
         String errorMessage = returnPair.getSecond();
 
@@ -125,7 +116,7 @@ public class ShortingService {
 
 
 
-    public Pair<String, String> generateShortUrl(String lastShortUrl, UrlRepository urlRepository) {
+    public Pair<String, String> generateNewShortUrl(String lastShortUrl, UrlRepository urlRepository) {
         String newShortUrl = incrementLastShortUrl(lastShortUrl);
 
         //if shortUrl exceed DB limit (8 characters) -> start from beginning
