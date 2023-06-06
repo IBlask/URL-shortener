@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Shorty</title>
+</head>
+<body>
+    <div style="text-align: center;">
+        <h1>Shorty - The best way to shorten your URLs</h1>
+        <form th:action="@{/administration/register}" method="POST" th:object="${requestRegister}">
+            <label for="accountID" class="form-label">First Name</label>
+            <input
+                    class="form-control"
+                    id="accountID"
+                    name="accountID"
+                    placeholder="Enter first name"
+                    field="*{accountID}"
+                    type="text"
+            />
+            <input type="submit" value="Register">
+        </form>
+    </div>
+</body>
+</html>
