@@ -6,6 +6,7 @@ import com.shorty.shorty.entity.Url;
 import com.shorty.shorty.entity.User;
 import com.shorty.shorty.repository.UrlRepository;
 import com.shorty.shorty.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +17,9 @@ import java.util.Base64;
 
 @Service
 public class ShortingService {
+
+    @Value("${server.domain}")
+    private String serverDomain;
 
     public ResponseShort shortenUrl(RequestShort requestShort, UrlRepository urlRepository, String authToken, UserRepository userRepository) {
         ResponseShort responseShort = new ResponseShort();
@@ -33,7 +37,7 @@ public class ShortingService {
         //CHECK IF ENTERED URL IS ALREADY SHORTENED
         Url url = urlRepository.findByFullUrlAndUserId(requestShort.getUrl(), user.getUser_id());
         if (url != null) {
-            responseShort.setShortUrl(url.getShortUrl());
+            responseShort.setShortUrl(url.getShortUrl(), serverDomain);
             responseShort.setDescription(null);
             return responseShort;
         }
@@ -107,7 +111,7 @@ public class ShortingService {
         if (!shortUrl.isEmpty()) {
             Url url = new Url(requestShort.getUrl(), shortUrl, requestShort.getRedirectType(), user.getUser_id());
             urlRepository.save(url);
-            responseShort.setShortUrl(url.getShortUrl());
+            responseShort.setShortUrl(url.getShortUrl(), serverDomain);
             responseShort.setDescription(null);
         }
 

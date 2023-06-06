@@ -13,6 +13,7 @@ import com.shorty.shorty.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -125,6 +126,8 @@ public class AdministrationControllerUnitTests {
     UrlRepository urlRepository;
     @MockBean
     ShortingService shortingService;
+    @Value("${server.domain}")
+    private String serverDomain;
 
     @Test
     public void shorting_test_requests_goodRequest() throws Exception {
@@ -133,7 +136,7 @@ public class AdministrationControllerUnitTests {
 
         ResponseShort response = new ResponseShort();
         response.setDescription(null);
-        response.setShortUrl("abcde");
+        response.setShortUrl("abcde", serverDomain);
 
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
 
@@ -155,7 +158,7 @@ public class AdministrationControllerUnitTests {
 
         ResponseShort response = new ResponseShort();
         response.setDescription(null);
-        response.setShortUrl("abcde");
+        response.setShortUrl("abcde", serverDomain);
 
         String authToken = Base64.getEncoder().encodeToString(("user:pass").getBytes());
 

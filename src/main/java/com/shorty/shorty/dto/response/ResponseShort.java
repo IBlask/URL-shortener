@@ -1,7 +1,6 @@
 package com.shorty.shorty.dto.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.shorty.shorty.ApplicationProperties;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ResponseShort {
@@ -12,8 +11,8 @@ public class ResponseShort {
         return shortUrl;
     }
 
-    public void setShortUrl(String shortUrlId) {
-        this.shortUrl = ApplicationProperties.getServerDomain() + shortUrlId;
+    public void setShortUrl(String shortUrlId, String serverDomain) {
+        this.shortUrl = serverDomain + shortUrlId;
     }
 
     public String getDescription() {

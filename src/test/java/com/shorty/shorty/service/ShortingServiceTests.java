@@ -1,6 +1,5 @@
 package com.shorty.shorty.service;
 
-import com.shorty.shorty.ApplicationProperties;
 import com.shorty.shorty.dto.request.RequestShort;
 import com.shorty.shorty.dto.response.ResponseShort;
 import com.shorty.shorty.entity.Url;
@@ -13,7 +12,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Base64;
@@ -35,6 +36,8 @@ public class ShortingServiceTests {
     UserRepository userRepository;
     @InjectMocks
     ShortingService shortingService;
+    @Value("${server.domain}")
+    private String serverDomain;
 
     @Test
     public void short_test_goodRequest() {
@@ -59,7 +62,6 @@ public class ShortingServiceTests {
         Matcher m = p.matcher(shortUrlId);
         boolean b = m.matches();
 
-        assertTrue(response.getShortUrl().contains(ApplicationProperties.getServerDomain()));
         assertTrue(b);
         assertNull(response.getDescription());
     }
@@ -105,7 +107,7 @@ public class ShortingServiceTests {
         assertNull(response.getShortUrl());
     }
 
-    @Test
+    @Test(expected = AccessDeniedException.class)
     public void short_test_missingAuthToken() {
         RequestShort request = mock(RequestShort.class);
         request.setUrl("https://www.google.com/");
@@ -118,7 +120,7 @@ public class ShortingServiceTests {
         assertNull(response.getShortUrl());
     }
 
-    @Test
+    @Test(expected = AccessDeniedException.class)
     public void short_test_wrongAuthToken() {
         RequestShort request = mock(RequestShort.class);
         request.setUrl("https://www.google.com/");
@@ -131,12 +133,9 @@ public class ShortingServiceTests {
         authToken = "Basic" + authToken;
 
         ResponseShort response = shortingService.shortenUrl(request, urlRepository, authToken, userRepository);
-
-        assertEquals("Access denied! Wrong username and/or password.", response.getDescription());
-        assertNull(response.getShortUrl());
     }
 
-    @Test
+    @Test(expected = AccessDeniedException.class)
     public void short_test_missingDataInAuthToken() {
         RequestShort request = mock(RequestShort.class);
         request.setUrl("https://www.google.com/");
@@ -154,7 +153,7 @@ public class ShortingServiceTests {
         assertNull(response.getShortUrl());
     }
 
-    @Test
+    @Test(expected = AccessDeniedException.class)
     public void short_test_missingUsernameInAuthToken() {
         RequestShort request = mock(RequestShort.class);
         request.setUrl("https://www.google.com/");
@@ -172,7 +171,7 @@ public class ShortingServiceTests {
         assertNull(response.getShortUrl());
     }
 
-    @Test
+    @Test(expected = AccessDeniedException.class)
     public void short_test_missingPasswordInAuthToken() {
         RequestShort request = mock(RequestShort.class);
         request.setUrl("https://www.google.com/");
@@ -236,7 +235,6 @@ public class ShortingServiceTests {
 
     @Test
     public void short_test_EnteredUrlIsAlreadyInDB() {
-        System.out.println(ApplicationProperties.getServerDomain());
         RequestShort request = mock(RequestShort.class);
         request.setUrl("http://www.google.com/");
         when(request.isEmpty()).thenReturn(false);

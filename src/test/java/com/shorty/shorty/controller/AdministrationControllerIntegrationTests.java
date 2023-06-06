@@ -1,11 +1,11 @@
 package com.shorty.shorty.controller;
 
-import com.shorty.shorty.ApplicationProperties;
 import com.shorty.shorty.dto.request.RequestRegister;
 import com.shorty.shorty.dto.request.RequestShort;
 import com.shorty.shorty.dto.response.ResponseRegister;
 import com.shorty.shorty.dto.response.ResponseShort;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -252,6 +252,8 @@ public class AdministrationControllerIntegrationTests {
     }
 
 
+    @Value("${server.domain}")
+    private String serverDomain;
 
     @Test
     public void shorting_test_goodRequest() throws Exception {
@@ -297,7 +299,7 @@ public class AdministrationControllerIntegrationTests {
         boolean b = m.matches();
 
         assertEquals(200, result.getStatusCodeValue());
-        assertTrue(shortUrl.contains(ApplicationProperties.getServerDomain()));
+        assertTrue(shortUrl.contains(serverDomain));
         assertTrue(b);
     }
 
