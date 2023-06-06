@@ -29,7 +29,7 @@ public class RedirectionServiceTests {
     @Test
     public void redirect_test_urlInDB() {
         Url mockedUrl = new Url("https://www.google.com/", "abcde", 302, 0);
-        when(urlRepository.getRedirectDataByShortUrlId("abcde")).thenReturn((mockedUrl));
+        when(urlRepository.findByShortUrl("abcde")).thenReturn((mockedUrl));
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
@@ -41,7 +41,7 @@ public class RedirectionServiceTests {
 
     @Test
     public void redirect_test_urlNotInDB() {
-        when(urlRepository.getRedirectDataByShortUrlId("abcde")).thenReturn((null));
+        when(urlRepository.findByShortUrl("abcde")).thenReturn((null));
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 

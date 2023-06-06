@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class RedirectionService {
 
     public void redirect(String shortUrlId, UrlRepository urlRepository, HttpServletResponse response) {
-        Url redirectData = urlRepository.getRedirectDataByShortUrlId(shortUrlId);
+        Url redirectData = urlRepository.findByShortUrl(shortUrlId);
 
         if (redirectData == null) {
             //TODO url-not-found page
